@@ -20,8 +20,8 @@ class Disk extends Component {
     _isComponentMounted = false
     componentDidMount() {
         this._isComponentMounted = true
-        this.audio = new Audio('music/'+ this.props.src)
-        this.audio.loop= true
+        this.audio = new Audio('music/' + this.props.src)
+        this.audio.loop = true
         requestAnimationFrame(this.tick);
     }
     componentWillUnmount() {
@@ -30,7 +30,7 @@ class Disk extends Component {
 
     tick() {
         if (!this._isComponentMounted) return;
-        const rotation = this.state.rotation + (this.state.isPaused ? 0 : 0.1);
+        const rotation = scale(this.audio.currentTime,  0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
         this.setState({ rotation });
         requestAnimationFrame(this.tick);
     }
@@ -43,8 +43,8 @@ class Disk extends Component {
         })
     }
     toggleLoop = () => {
-         this.audio.loop = !this.state.isLoop
-        
+        this.audio.loop = !this.state.isLoop
+
         this.setState({
             isLoop: !this.state.isLoop
         })
@@ -56,22 +56,22 @@ class Disk extends Component {
         })
     }
     restart = () => {
-        this.setState({isRestarting: true})
+        this.setState({ isRestarting: true })
         this.audio.currentTime = 0
-        this.setState({rotation: 0})
-        setTimeout(()=>this.setState({isRestarting: false}), 50)
+        this.setState({ rotation: 0 })
+        setTimeout(() => this.setState({ isRestarting: false }), 50)
 
     }
 
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected } = this.props
-        const { isPaused, isMuted, isLoop, isRestarting } = this.state
+        const { isPaused, isMuted, isLoop, isRestarting, rotation } = this.state
 
         return (
             <Wrapper
                 isSelected={isSelected}
-                isTurntableSelected = {isTurntableSelected}
+                isTurntableSelected={isTurntableSelected}
             >
                 {isTurntableSelected && isSelected &&
                     <Fragment>
@@ -97,13 +97,16 @@ class Disk extends Component {
                         />
                     </Fragment>
                 }
-                <Num onClick={(ev) => selectDisk(ev,index - 1)}>{index}</Num>
+                <Num onClick={(ev) => selectDisk(ev, index - 1)}>{index}</Num>
                 < Column>
                     <Button onClick={this.togglePaused} isActive={isPaused} children={'P'} />
                     <Button onClick={this.restart} isActive={isRestarting} children={'R'} />
                 </Column>
 
-                <Animation isPaused={isPaused} rotation={this.state.rotation} width={50} height={50} />
+                {false ? <Animation isPaused={isPaused} rotation={rotation} width={120} height={120} />
+                    : <Vinyl src="./sprites/disk.png" style={{ transform: `rotate(${rotation}deg)`}} />
+
+                }
                 < Column>
                     <Button onClick={this.toggleMuted} isActive={isMuted} children={'M'} />
                     <Button onClick={this.toggleLoop} isActive={isLoop} children={'L'} />
@@ -112,6 +115,15 @@ class Disk extends Component {
         )
     }
 }
+
+const scale = (num, in_min, in_max, out_min, out_max) => {
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
+const Vinyl = styled.img`
+    width: 120px;
+    transform: rotate(${(props => props.rotation)}deg);
+`
 
 
 const Num = styled.button`

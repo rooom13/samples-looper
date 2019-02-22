@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components'
+// import styled from 'styled-components'
 
 import Rack from './components/Rack'
 
@@ -29,7 +29,7 @@ class App extends Component {
 
   render() {
 
-    const { hasData, categories, categorisCount } = this.state
+    const { hasData, categories } = this.state
 
 
     if (!hasData) return <div>Loading</div>

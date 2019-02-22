@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components'
-import KeyHandler, { KEYPRESS, KEYDOWN } from 'react-key-handler'
+import KeyHandler, {  KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
 
 class Rack extends Component {
@@ -17,7 +17,6 @@ class Rack extends Component {
         else if (turntable > this.props.turntables.length) turntable = 0
 
         this.setState({ selectedTurntable: turntable })
-        console.log(turntable)
     }
     render() {
 
@@ -40,7 +39,6 @@ class Rack extends Component {
 
                 {turntables.map(turntable => {
                     const turntableIndex = turntableCount
-                    console.log(turntableIndex , selectedTurntable)
                     ++turntableCount
                     return (
                         <Turntable isSelected={turntableIndex === selectedTurntable} key={turntableCount} name={turntable.name} disks={turntable.loops} />

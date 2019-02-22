@@ -23,7 +23,6 @@ class Turntable extends Component {
         let diskCount = 0
         const { selectedDisk  } = this.state
         const { disks, isSelected } = this.props
-        console.log(isSelected)
         return (
             <Wrapper>
                 {isSelected &&

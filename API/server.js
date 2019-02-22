@@ -57,7 +57,6 @@ app.get('/api/loops/fullList/:bpm', function (req, res) {
 
         let megafiles = []
         for (folder in folders) {
-          console.log()
           for (file in a[folder]) {
             megafiles.push(subfolder + "/" + folders[folder] + "/" + a[folder][file])
           }
