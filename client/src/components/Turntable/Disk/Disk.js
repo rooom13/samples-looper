@@ -65,7 +65,7 @@ class Disk extends Component {
 
 
     render() {
-        const { isSelected, index } = this.props
+        const { isSelected, index, selectDisk } = this.props
         const { isPaused, isMuted, isLoop, isRestarting } = this.state
 
         return (
@@ -96,7 +96,7 @@ class Disk extends Component {
                         />
                     </Fragment>
                 }
-                <Num>{index}</Num>
+                <Num onClick={(ev) => selectDisk(ev,index - 1)}>{index}</Num>
                 < Column>
                     <Button onClick={this.togglePaused} isActive={isPaused} children={'P'} />
                     <Button onClick={this.restart} isActive={isRestarting} children={'R'} />
@@ -113,9 +113,10 @@ class Disk extends Component {
 }
 
 
-const Num = styled.div`
+const Num = styled.button`
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 10px;
     height: 10px;
     background-color: black;

@@ -46,6 +46,7 @@ class Turntable extends Component {
                         />
 
                         <Disk
+                            selectDisk={this.selectDisk}
                             src={loop}
                             index={diskIndex + 1}
                             isSelected={selectedDisk === diskIndex} >{loop}</Disk>
