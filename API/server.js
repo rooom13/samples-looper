@@ -17,7 +17,32 @@ async function getFolderContent(folder) {
 
 }
 
-app.get('/api/getMusic/:bpm', function (req, res) {
+app.get('/api/loops/inFolders/:bpm', function (req, res) {
+  const subfolder = req.params.bpm;
+
+  fs.readdir(musicFolder + "/" + subfolder, (err, folders) => {
+    let promises = []
+    folders.forEach(folder => promises.push(getFolderContent(musicFolder + "/" + subfolder + "/" + folder)))
+    Promise.all(promises).then(a => {
+
+      let final = []
+      for (folder in folders) {
+        const name = folders[folder]
+        final.push({
+          name: name, loops: a[folder].map(a => subfolder + "/" + name + "/" + a)
+        })
+      }
+
+      res.json({ folders: final })
+
+    })
+
+  })
+
+
+})
+
+app.get('/api/loops/fullList/:bpm', function (req, res) {
 
   const subfolder = req.params.bpm;
   // console.log(subfolder)
@@ -46,18 +71,6 @@ app.get('/api/getMusic/:bpm', function (req, res) {
 
   })
 
-
-
-  // folders.forEach((folder) => {
-  //   fs.readdir(musicFolder + "/" + subfolder + "/" + folder, (err, files) => {
-  //     files.forEach((file) => {
-  //       const filename = subfolder + "/" + folder + "/" + file
-  //       megafiles.push(filename)
-  //     })
-  //     console.log(megafiles)
-
-  //   })
-  // })
 })
 
 

@@ -18,7 +18,7 @@ class Animation extends Component {
         context.translate(width/2, height/2);
         context.rotate(rotation, 0, 0);
         context.fillStyle = 'black';
-        context.fillRect(-50, -50, height/2, height/2);
+        context.fillRect(0, 0, height/4, height/4);
         context.restore();
     }
 
@@ -26,6 +26,7 @@ class Animation extends Component {
         const { width, height } = this.props;
         return (
             <canvas
+            style={{border: "1px solid black"}}
                 ref="canvas"
                 width={width}
                 height={height}

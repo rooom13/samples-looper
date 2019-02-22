@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
-// import styled from 'styled-components'
+import styled from 'styled-components'
 
-import Turntable from './components/Turntable/Turntable'
+import Rack from './components/Rack'
 
 
 class App extends Component {
 
   componentDidMount() {
 
-    fetch('/api/getMusic/175')
+    fetch('/api/loops/inFolders/175')
       .then(response => response.json())
       .then(data => {
         this.setState(
           {
-            loops175: data.files,
-            hasData: true
+            categories: data.folders,
+            categorisCount: data.folders.lenght,
+            loops175: data.folders,
+            hasData: true,
+
           })
 
       })
@@ -26,12 +29,14 @@ class App extends Component {
 
   render() {
 
-    console.log(this.state)
+    const { hasData, categories, categorisCount } = this.state
 
-    const loops = this.state.loops175
+
+    if (!hasData) return <div>Loading</div>
+
     return (
-      this.state.hasData ? <Turntable disks={loops} /> : <div>Load</div>
-    );
+      <Rack turntables={categories} />
+    )
   }
 }
 

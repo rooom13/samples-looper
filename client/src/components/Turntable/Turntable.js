@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-// import styled from 'styled-components'
+import styled from 'styled-components'
 import KeyHandler, { KEYPRESS, KEYDOWN } from 'react-key-handler'
 import Disk from './Disk/Disk'
 
@@ -7,35 +7,41 @@ import Disk from './Disk/Disk'
 class Turntable extends Component {
 
     state = {
-        selectedDisk: 0
+        selectedDisk: 0,
+        isSelected: false
 
     }
 
     selectDisk = (ev, disk) => {
         ev.preventDefault()
-        if(disk < 0 ) disk = this.props.disks.length
-        else if(disk > this.props.disks.length ) disk = 0
-        
-        this.setState({ selectedDisk: disk  })
+        if (disk < 0) disk = this.props.disks.length
+        else if (disk > this.props.disks.length) disk = 0
+
+        this.setState({ selectedDisk: disk })
     }
     render() {
         let diskCount = 0
-        const { selectedDisk } = this.state
+        const { selectedDisk  } = this.state
+        const { disks, isSelected } = this.props
+        console.log(isSelected)
         return (
+            <Wrapper>
+                {isSelected &&
+                    <Fragment>
 
-            <Fragment>
-                 <KeyHandler
+                        <KeyHandler
                             keyEventName={KEYDOWN}
                             code={('ArrowDown').toString()}
-                            onKeyHandle={(ev) => this.selectDisk(ev, selectedDisk +1 )}
+                            onKeyHandle={(ev) => this.selectDisk(ev, selectedDisk + 1)}
                         />
-                 <KeyHandler
+                        <KeyHandler
                             keyEventName={KEYDOWN}
                             code={('ArrowUp').toString()}
-                            onKeyHandle={(ev) => this.selectDisk(ev, selectedDisk - 1 )}
+                            onKeyHandle={(ev) => this.selectDisk(ev, selectedDisk - 1)}
                         />
-
-                {this.props.disks.map(loop => {
+                    </Fragment>
+                }
+                {disks.map(loop => {
                     const diskIndex = diskCount
                     diskCount++
                     return (<Fragment key={loop}>
@@ -46,15 +52,17 @@ class Turntable extends Component {
                         />
 
                         <Disk
+
                             selectDisk={this.selectDisk}
                             src={loop}
                             index={diskIndex + 1}
-                            isSelected={selectedDisk === diskIndex} >{loop}</Disk>
+                            isTurntableSelected={isSelected}
+                            isSelected={selectedDisk === diskIndex } >{loop}</Disk>
                     </Fragment>)
                 }
 
                 )}
-            </Fragment>
+            </Wrapper>
 
         )
     }
@@ -62,4 +70,10 @@ class Turntable extends Component {
 
 }
 
+const Wrapper = styled.div`
+border: 2px solid black;
+width: 250px;
+
+
+`
 export default Turntable;

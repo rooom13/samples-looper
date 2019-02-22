@@ -65,14 +65,15 @@ class Disk extends Component {
 
 
     render() {
-        const { isSelected, index, selectDisk } = this.props
+        const { isSelected, index, selectDisk, isTurntableSelected } = this.props
         const { isPaused, isMuted, isLoop, isRestarting } = this.state
 
         return (
             <Wrapper
                 isSelected={isSelected}
+                isTurntableSelected = {isTurntableSelected}
             >
-                {isSelected &&
+                {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler
                             keyEventName={KEYPRESS}
@@ -102,7 +103,7 @@ class Disk extends Component {
                     <Button onClick={this.restart} isActive={isRestarting} children={'R'} />
                 </Column>
 
-                <Animation isPaused={isPaused} rotation={this.state.rotation} width={160} height={100} />
+                <Animation isPaused={isPaused} rotation={this.state.rotation} width={50} height={50} />
                 < Column>
                     <Button onClick={this.toggleMuted} isActive={isMuted} children={'M'} />
                     <Button onClick={this.toggleLoop} isActive={isLoop} children={'L'} />
@@ -151,9 +152,15 @@ const Wrapper = styled.div`
     padding: 0.5rem;
 
     background-color: grey;
-    ${(props) => (props.isSelected && `
+    ${(props) => (props.isSelected && props.isTurntableSelected && `
     background-color: brown;  `
     )};
+
+    ${(props) => (props.isSelected && `
+    border: 1px solid black;  `
+    )};
+    
+
 `
 
 
