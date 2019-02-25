@@ -31,6 +31,8 @@ class DiskInterface extends Component {
             isSelected,
             index,
             selectDisk,
+            duration,
+            isAudioLoaded
         } = this.props
         const { isRestarting } = this.state
 
@@ -48,16 +50,24 @@ class DiskInterface extends Component {
                     <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
                     <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
                 </Column>
+                < Column>
+                    {isAudioLoaded && <Duration onChange={e=>console.log(e.target.value)} value={duration} />}
+                </Column>
             </Wrapper>
         )
     }
 }
 
-const Vinyl = styled.img`
-    width: 120px;
-    transform: rotate(${(props => props.rotation)}deg);
+const Duration = styled.input`
+    border: 1px solid black;
+    padding: 0.25rem;    
+    width: 35px;
 `
 
+const Vinyl = styled.img`
+    width: 3rem;
+    transform: rotate(${(props => props.rotation)}deg);
+`
 
 const Num = styled.button`
     display: flex;
@@ -82,9 +92,11 @@ const Column = styled.div`
     flex-direction: column;
     justify-content: center;
     width: 100%;
+    margin: 0.25rem;
 `
 
 const Wrapper = styled.div`
+    
     display: flex;
     justify-content: center;
     align-items: center;
