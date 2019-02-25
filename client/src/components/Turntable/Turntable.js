@@ -20,6 +20,9 @@ class Turntable extends Component {
         this.setState({ selectedDisk: disk })
     }
     render() {
+
+
+
         let diskCount = 0
         const { selectedDisk  } = this.state
         const { disks, isSelected } = this.props

@@ -6,9 +6,14 @@ import Rack from './components/Rack'
 
 class App extends Component {
 
+  state = {}
+
   componentDidMount() {
 
-    fetch('/api/loops/inFolders/175')
+    // const loops175URL = '/api/loops/inFolders/175'
+    const loops0URL = '/api/loops/inFolders/0'
+
+    fetch(loops0URL)
       .then(response => response.json())
       .then(data => {
         this.setState(
@@ -23,12 +28,8 @@ class App extends Component {
       })
   }
 
-  state = {
-    loops174: ['174/amen_break.wav', '174/808.wav', '174/banjo.wav', '174/tm88.wav'],
-  }
 
   render() {
-
     const { hasData, categories } = this.state
 
 

@@ -23,6 +23,8 @@ class Rack extends Component {
         const { selectedTurntable } = this.state
         const { turntables } = this.props
         let turntableCount = 0
+
+  
         return (
 
             <TurntablesWrapper>

@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components'
-import Animation from './Animation'
 import KeyHandler, { KEYPRESS } from 'react-key-handler'
-
+import DiskInterface from './DiskInterface'
 
 class Disk extends Component {
     constructor(props) {
@@ -12,10 +10,7 @@ class Disk extends Component {
             isPaused: true,
             isMuted: false,
             isLoop: true,
-            isRestarting: false
         };
-
-        this.tick = this.tick.bind(this);
     }
     _isComponentMounted = false
     componentDidMount() {
@@ -28,9 +23,9 @@ class Disk extends Component {
         this._isComponentMounted = false
     }
 
-    tick() {
+    tick = () => {
         if (!this._isComponentMounted) return;
-        const rotation = scale(this.audio.currentTime,  0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
+        const rotation = scale(this.audio.currentTime, 0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
         this.setState({ rotation });
         requestAnimationFrame(this.tick);
     }
@@ -56,23 +51,20 @@ class Disk extends Component {
         })
     }
     restart = () => {
-        this.setState({ isRestarting: true })
         this.audio.currentTime = 0
         this.setState({ rotation: 0 })
-        setTimeout(() => this.setState({ isRestarting: false }), 50)
 
     }
 
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected } = this.props
-        const { isPaused, isMuted, isLoop, isRestarting, rotation } = this.state
+        const { isPaused, isMuted, isLoop, rotation } = this.state
+
 
         return (
-            <Wrapper
-                isSelected={isSelected}
-                isTurntableSelected={isTurntableSelected}
-            >
+
+            <Fragment>
                 {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -97,83 +89,31 @@ class Disk extends Component {
                         />
                     </Fragment>
                 }
-                <Num onClick={(ev) => selectDisk(ev, index - 1)}>{index}</Num>
-                < Column>
-                    <Button onClick={this.togglePaused} isActive={isPaused} children={'P'} />
-                    <Button onClick={this.restart} isActive={isRestarting} children={'R'} />
-                </Column>
 
-                {false ? <Animation isPaused={isPaused} rotation={rotation} width={120} height={120} />
-                    : <Vinyl src="./sprites/disk.png" style={{ transform: `rotate(${rotation}deg)`}} />
-
-                }
-                < Column>
-                    <Button onClick={this.toggleMuted} isActive={isMuted} children={'M'} />
-                    <Button onClick={this.toggleLoop} isActive={isLoop} children={'L'} />
-                </Column>
-            </Wrapper>
+                <DiskInterface
+                    selectDisk={selectDisk}
+                    index={index}
+                    togglePaused={this.togglePaused}
+                    toggleMuted={this.toggleMuted}
+                    toggleLoop={this.toggleLoop}
+                    restart={this.restart}
+                    isPaused={isPaused}
+                    isLoop={isLoop}
+                    isMuted={isMuted}
+                    isTurntableSelected={isTurntableSelected}
+                    isSelected={isSelected}
+                    rotation={rotation}
+                />
+            </Fragment>
         )
     }
 }
 
 const scale = (num, in_min, in_max, out_min, out_max) => {
     return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  }
-
-const Vinyl = styled.img`
-    width: 120px;
-    transform: rotate(${(props => props.rotation)}deg);
-`
+}
 
 
-const Num = styled.button`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 10px;
-    height: 10px;
-    background-color: black;
-    border-radius: 50%;
-    padding: 1rem;
-    color: white;
-`
-const Button = styled.button`
-
-height: 100%;
-
-${(props) => (props.isActive && `
-background-color: blue;  `
-    )};
-
-`
-const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-
-    
-`
-
-const Wrapper = styled.div`
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 0.5rem;
-
-    background-color: grey;
-    ${(props) => (props.isSelected && props.isTurntableSelected && `
-    background-color: brown;  `
-    )};
-
-    ${(props) => (props.isSelected && `
-    border: 1px solid black;  `
-    )};
-    
-
-`
 
 
 export default Disk  
