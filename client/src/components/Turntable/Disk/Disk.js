@@ -17,7 +17,7 @@ class Disk extends Component {
         this.startedAt = 0
         this.pausedAt = 0
     }
-    p
+
     _isComponentMounted = false
     componentDidMount() {
         this._isComponentMounted = true
@@ -28,6 +28,8 @@ class Disk extends Component {
 
         //web audio API
         this.actx = new (window.AudioContext || window.webkitAudioContext)()
+        this.gainNode = this.actx.createGain()
+        this.gainNode.connect(this.actx.destination)
 
         fetch('music/' + this.props.src, { mode: "cors" })
             .then((resp) => resp.arrayBuffer())
@@ -38,79 +40,108 @@ class Disk extends Component {
                     duration: buffer.duration
                 })
             }))
-        requestAnimationFrame(this.tick);
+        requestAnimationFrame(this.tick.bind(this));
+
+        // setInterval(()=>       console.log(this.state.currentTime), 1000)
     }
     componentWillUnmount() {
         this._isComponentMounted = false
     }
 
     play = () => {
-        this.srcNode = this.actx.createBufferSource();  // create audio source
-        this.srcNode.buffer = this.buffer;             // use decoded buffer
-        this.srcNode.connect(this.actx.destination);    // create output
-        this.srcNode.loop = this.state.isLoop;
+        console.log('play')
 
+        // if(!this.manualStop === 2)
+        
+        this.srcNode = this.actx.createBufferSource();  // create audio source
+        this.srcNode.onended = () => {
+            // this.setState({ isPaused: true })
+        }
+        this.srcNode.buffer = this.buffer;             // use decoded buffer
+        this.srcNode.connect(this.gainNode);    // create output
+        this.srcNode.loop = this.state.isLoop;
+        
         const offset = this.pausedAt % this.state.duration
         this.srcNode.start(0, offset)
         this.startedAt = this.actx.currentTime - offset
-        console.log(this.startedAt)
+        this.setState({ isPaused: false })
+        // console.log(this.startedAt)
     }
 
-    stop = () => {
+
+
+    stop = (shouldKeep) => {
+        if(!this.srcNode)return
+        console.log('stop')
+
+
         const elapsed = this.actx.currentTime - this.startedAt
         this.srcNode.stop()
         this.pausedAt = elapsed
-        console.log(this.srcNode)
+
+        console.log(shouldKeep ? 'shouldKeep' : 'shouldPause')
+        this.setState({isPaused: !shouldKeep})
 
     }
 
+    restart = () => {
+        if(!this.srcNode)return;
+        
+        this.setState({ currentTime: 0 })
+        this.stop(!this.state.isPaused)
+        this.pausedAt = 0
+        if (!this.state.isPaused) this.play()
+
+    }
 
     tick = () => {
+
         if (!this._isComponentMounted) return;
 
         if (!this.state.isPaused) {
-            const elapsed = this.actx.currentTime - this.pausedAt - this.startedAt
+            const currentTime = this.actx.currentTime - this.startedAt
 
-            this.setState({ currentTime: this.pausedAt + elapsed })
-            const rotation = scale(this.state.currentTime, 0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
-            this.setState({ rotation });
+            // if(!this.state.isLoop && currentTime >= this.state.duration- 0.01){
+            //     console.log(2)
+            //     this.setState({isPaused: true})
+            //     // this.stop(true)
+
+            // }
+            // console.log(this.lstate.currentTime.toFixed(2))
+
+            this.setState({ currentTime: currentTime % this.state.duration })
         }
+        const rotation = scale(this.state.currentTime, 0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
+        this.setState({ rotation });
 
-
-
-        requestAnimationFrame(this.tick);
+        requestAnimationFrame(this.tick.bind(this));
     }
 
     togglePaused = () => {
-        // if (this.state.isPaused) this.audio.play()
-        // else this.audio.pause()
-
+ 
         if (this.state.isPaused) this.play()
         else this.stop()
 
 
-        this.setState({
-            isPaused: !this.state.isPaused
-        })
     }
     toggleLoop = () => {
-        this.audio.loop = !this.state.isLoop
+       if(this.srcNode)
+        this.srcNode.loop = !this.state.isLoop;
 
         this.setState({
             isLoop: !this.state.isLoop
         })
     }
     toggleMuted = () => {
-        this.audio.muted = !this.state.isMuted
+        this.gainNode.gain.setValueAtTime(this.state.isMuted ? 1 : 0, this.actx.currentTime);
+
+
+        // this.audio.muted = !this.state.isMuted
         this.setState({
             isMuted: !this.state.isMuted
         })
     }
-    restart = () => {
-        this.audio.currentTime = 0
-        this.setState({ rotation: 0 })
 
-    }
 
 
     render() {
@@ -162,6 +193,11 @@ class Disk extends Component {
                     duration={duration}
                     isAudioLoaded={isAudioLoaded}
                 />
+                {
+                    (Object.entries(this.state).map(a => <div>{a[0] + ' : ' + a[1] + '\n'}</div>))
+
+                }
+                <div>{'manual :' +this.manualStop}</div>
             </Fragment>
         )
     }

@@ -10,7 +10,7 @@ class App extends Component {
 
   componentDidMount() {
 
-    // const loops175URL = '/api/loops/inFolders/175'
+    const loops175URL = '/api/loops/inFolders/175'
     const loops0URL = '/api/loops/inFolders/0'
 
     fetch(loops0URL)
