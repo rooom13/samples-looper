@@ -1,45 +1,120 @@
 import React, { Component } from 'react';
+import styled from 'styled-components'
+import { scale } from '../../../utils/functions';
 
 class Animation extends Component {
-    constructor(props) {
-        super(props);
-        this.paint = this.paint.bind(this);
-    }
 
     img = new Image('./public/sprites/disk.png')
 
+    componentDidMount() {
+        this.paintWave();
+    }
     componentDidUpdate() {
-        this.paint();
+        this.paintBar();
     }
 
-    paint() {
-        const { width, height } = this.props;
-        const ctx = this.refs.canvas.getContext("2d");
-        ctx.clearRect(0, 0, width, height);
-        ctx.beginPath();
-        ctx.arc(width/2, width/2, width/2, 0, 2 * Math.PI);
-        ctx.stroke();
+    paintBar(){
 
-        // context.save();
-        // context.translate(width/2, height/2);
-        // context.rotate(rotation, 0, 0);
-        // context.fillStyle = 'black';
-        // context.fillRect(0, 0, height/2, height/2);
-        // context.restore();
+        const progress = this.props.progress
+        // console.log(this.props.progress)
+        let canvas = document.getElementById(`${this.props.idSrc}f`)
+        let ctx = canvas.getContext("2d");
+
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+
+        ctx.fillStyle = 'red';
+
+        const xsize = 1
+
+        // const salto = Math.floor(channel0.length / amount)
+
+        const x = scale(progress,0,100,0,WIDTH)
+
+        ctx.fillRect(x,0,xsize,HEIGHT)
+
+        // const value1 = Math.abs(channel0[i * salto]) * HEIGHT / 2
+        // const value2 = Math.abs(channel1[i * salto]) * HEIGHT / 2
+
+        // ctx.fillRect(i * xsize, HEIGHT / 2, xsize, - (value1 + minSize))
+        // ctx.fillRect(i * xsize, HEIGHT / 2, xsize, + (value2 + minSize))
+    }
+
+
+    
+
+    paintWave() {
+
+        const buffer = this.props.buffer
+        let canvas = document.getElementById(`${this.props.idSrc}b`)
+        let ctx = canvas.getContext("2d");
+        const channel0 = buffer.getChannelData(0)
+        const channel1 = buffer.getChannelData(1)
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+
+        const xsize = 1
+        const amount = WIDTH / xsize
+        const salto = Math.floor(channel0.length / amount)
+
+        // ctx.fillStyle = 'black';
+        // ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        ctx.fillStyle = 'black';
+        for (var i = 0; i < channel0.length - salto; i++) {
+            const value1 = Math.abs(channel0[i * salto]) * HEIGHT / 2
+            const value2 = Math.abs(channel1[i * salto]) * HEIGHT / 2
+
+            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, - (value1 ))
+            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, + (value2 ))
+        }
+
+
     }
 
     render() {
-        const { width, height } = this.props;
+        const { width, height, idSrc } = this.props;
         return (
-            <canvas
-                style={{ border: "1px solid black" }}
-                ref="canvas"
+            <CanvasWrapper    width={width}
+            height={height}>
+
+                <CanvasBack
+                id={idSrc + 'b'}
                 width={width}
                 height={height}
-            />
+                />
+                 <CanvasFront
+                id={idSrc + 'f'}
+                    width={width}
+                    height={height}
+                 />
+            </CanvasWrapper>
         );
     }
 }
+
+const CanvasWrapper = styled.div`
+    position: relative;
+    ${props=> 'width: ' + props.width + 'px;height: ' + props.height + 'px;'}
+`
+const CanvasBack = styled.canvas`
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 0;  
+`
+const CanvasFront = styled.canvas`
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    z-index: 1;  
+`
 
 
 export default Animation

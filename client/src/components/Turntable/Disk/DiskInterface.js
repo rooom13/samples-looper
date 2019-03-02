@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components'
-// import Animation from './Animation'
+import Animation from './Animation'
+import { scale } from '../../../utils/functions';
 
 
 class DiskInterface extends Component {
@@ -12,7 +13,7 @@ class DiskInterface extends Component {
 
     restart = () => {
         this.props.restart()
-        this.setState({isRestarting: true})
+        this.setState({ isRestarting: true })
         setTimeout(() => this.setState({ isRestarting: false }), 50)
 
     }
@@ -28,14 +29,21 @@ class DiskInterface extends Component {
             isPaused,
             isLoop,
             isMuted,
-            rotation,
+            progress,
             isSelected,
             index,
             selectDisk,
             duration,
             isAudioLoaded,
-            isRestarting
+            isRestarting,
+            buffer,
+            idSrc
         } = this.props
+
+        const isAnimation = true
+
+
+        const rotation = scale(progress, 0,100,0,360)
 
         return (
             <Wrapper isSelected={isSelected} isTurntableSelected={isTurntableSelected}>
@@ -44,18 +52,20 @@ class DiskInterface extends Component {
                     <Button onClick={togglePaused} isActive={isPaused} children={'P'} />
                     <Button onClick={restart} isActive={isRestarting} children={'R'} />
                 </Column>
-                {/* <Animation isPaused={isPaused} rotation={rotation} width={120} height={120} /> */}
-                <VinylWrapper>
+                <Column>
+                    {isAudioLoaded && isAnimation ? <Animation idSrc={idSrc} buffer={buffer} isPaused={isPaused} progress={progress} width={120} height={120} />
+                        : <VinylWrapper>
 
-                <Vinyl src={ isAudioLoaded &&"./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />
-                </VinylWrapper>
+                            <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />
+                        </VinylWrapper>}
+                </Column>
 
                 < Column>
                     <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
                     <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
                 </Column>
                 < Column>
-                    { <Duration onChange={e=>console.log(e.target.value)} value={isAudioLoaded && duration} />}
+                    {<Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />}
                 </Column>
             </Wrapper>
         )

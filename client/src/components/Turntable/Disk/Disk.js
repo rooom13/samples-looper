@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import KeyHandler, { KEYPRESS } from 'react-key-handler'
 import DiskInterface from './DiskInterface'
+import {scale} from '../../../utils/functions'
 
 class Disk extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rotation: 0,
+            progress: 0,
             isPaused: true,
             isMuted: false,
             isLoop: true,
@@ -111,8 +112,8 @@ class Disk extends Component {
 
             this.setState({ currentTime: currentTime % this.state.duration })
         }
-        const rotation = scale(this.state.currentTime, 0, this.audio.duration, 0, 360) // (this.state.isPaused ? 0 : 0.1);
-        this.setState({ rotation });
+        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100)
+        this.setState({ progress });
 
         requestAnimationFrame(this.tick.bind(this));
     }
@@ -147,8 +148,8 @@ class Disk extends Component {
 
 
     render() {
-        const { isSelected, index, selectDisk, isTurntableSelected } = this.props
-        const { isPaused, isMuted, isLoop, rotation, duration, isAudioLoaded, isRestarting } = this.state
+        const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
+        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting } = this.state
 
 
         return (
@@ -192,23 +193,24 @@ class Disk extends Component {
                     isMuted={isMuted}
                     isTurntableSelected={isTurntableSelected}
                     isSelected={isSelected}
-                    rotation={rotation}
+                    progress={progress}
                     duration={duration}
                     isAudioLoaded={isAudioLoaded}
+                    buffer={isAudioLoaded && this.buffer}
+                    idSrc={src}
+
                 />
                 {/* {
                     (Object.entries(this.state).map(a => <div key={a}>{a[0] + ' : ' + a[1] + '\n'}</div>))
 
                 }
                 <div>{'manual :' +this.manualStop}</div> */}
-            </Fragment>
+                </Fragment>
         )
     }
 }
 
-const scale = (num, in_min, in_max, out_min, out_max) => {
-    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
+
 
 
 

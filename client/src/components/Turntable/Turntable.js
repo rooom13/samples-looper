@@ -74,7 +74,6 @@ class Turntable extends Component {
 
 const Wrapper = styled.div`
 border: 2px solid black;
-width: 250px;
 
 
 `

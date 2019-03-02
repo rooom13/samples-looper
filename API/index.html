@@ -1,0 +1,95 @@
+<html>
+
+
+<canvas></canvas>
+
+<script>
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var voiceSelect = document.getElementById("voice");
+    var source;
+    var stream;
+
+
+
+
+    //set up the different audio nodes we will use for the app
+
+    var analyser = audioCtx.createAnalyser();
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.smoothingTimeConstant = 0.85;
+
+    var distortion = audioCtx.createWaveShaper();
+    var gainNode = audioCtx.createGain();
+    var biquadFilter = audioCtx.createBiquadFilter();
+
+    var canvas = document.querySelector('canvas');
+    var canvasCtx = canvas.getContext("2d");
+
+    var intendedWidth = 200;
+
+    canvas.setAttribute('width', intendedWidth);
+
+
+    var drawVisual;
+
+    var buffer
+    var srcNode
+    //main block for doing the audio recording
+
+    fetch('https://mdn.github.io/voice-change-o-matic/audio/concert-crowd.ogg', { mode: "cors" })
+        .then((resp) => resp.arrayBuffer())
+        .then(buffer => audioCtx.decodeAudioData(buffer, buffer => {
+            buffer = buffer
+
+            srcNode = audioCtx.createBufferSource();  // create audio source
+
+            srcNode.buffer = buffer;
+
+            //    source = audioCtx.createMediaStreamSource(buffer);
+            srcNode.connect(biquadFilter);
+            biquadFilter.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            srcNode.start()
+            visualize();
+
+
+
+
+            function visualize() {
+                const channel0 = buffer.getChannelData(0)
+                const channel1 = buffer.getChannelData(1)
+                WIDTH = canvas.width;
+                HEIGHT = canvas.height;
+
+                var bufferLength = analyser.fftSize;
+                var dataArray = new Uint8Array(bufferLength);
+
+                canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+
+                const xsixe = 1
+                const minSize = 5
+                const amount = WIDTH / xsixe
+                const salto = Math.floor(channel0.length / amount)
+
+                canvasCtx.fillStyle = 'black';
+                canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                canvasCtx.fillStyle = 'blue';
+                for (var i = 0; i < channel0.length - salto; i++) {
+                    value1 = Math.abs(channel0[i * salto]) * HEIGHT / 2
+                    value2 = Math.abs(channel1[i * salto]) * HEIGHT / 2
+
+                    canvasCtx.fillRect(i * xsixe, HEIGHT / 2, xsixe, - (value1 + minSize))
+                    canvasCtx.fillRect(i * xsixe, HEIGHT / 2, xsixe, + (value2 + minSize))
+                }
+
+            }
+
+        }))
+
+</script>
+
+</html>

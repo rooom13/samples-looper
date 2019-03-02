@@ -17,6 +17,13 @@ async function getFolderContent(folder) {
 
 }
 
+
+app.get('/', function (req, res) {
+
+  res.sendFile(__dirname + '/index.html')
+})
+
+
 app.get('/api/loops/inFolders/:bpm', function (req, res) {
   const subfolder = req.params.bpm;
 
