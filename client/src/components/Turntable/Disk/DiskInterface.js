@@ -23,6 +23,7 @@ class DiskInterface extends Component {
             togglePaused,
             toggleMuted,
             toggleLoop,
+            restart,
             isTurntableSelected,
             isPaused,
             isLoop,
@@ -32,41 +33,50 @@ class DiskInterface extends Component {
             index,
             selectDisk,
             duration,
-            isAudioLoaded
+            isAudioLoaded,
+            isRestarting
         } = this.props
-        const { isRestarting } = this.state
 
         return (
             <Wrapper isSelected={isSelected} isTurntableSelected={isTurntableSelected}>
                 <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
                 < Column>
                     <Button onClick={togglePaused} isActive={isPaused} children={'P'} />
-                    <Button onClick={this.restart} isActive={isRestarting} children={'R'} />
+                    <Button onClick={restart} isActive={isRestarting} children={'R'} />
                 </Column>
                 {/* <Animation isPaused={isPaused} rotation={rotation} width={120} height={120} /> */}
-                <Vinyl src="./sprites/disk.png" style={{ transform: `rotate(${rotation}deg)` }} />
+                <VinylWrapper>
+
+                <Vinyl src={ isAudioLoaded &&"./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />
+                </VinylWrapper>
 
                 < Column>
                     <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
                     <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
                 </Column>
                 < Column>
-                    {isAudioLoaded && <Duration onChange={e=>console.log(e.target.value)} value={duration} />}
+                    { <Duration onChange={e=>console.log(e.target.value)} value={isAudioLoaded && duration} />}
                 </Column>
             </Wrapper>
         )
     }
 }
+const VinylWrapper = styled.div`
+width: 3rem;
+`
 
+
+const Vinyl = styled.img`
+width: 3rem;
+
+    transform: rotate(${(props => props.rotation)}deg);
+`
 const Duration = styled.input`
+width: 3rem;
+
     border: 1px solid black;
     padding: 0.25rem;    
     width: 35px;
-`
-
-const Vinyl = styled.img`
-    width: 3rem;
-    transform: rotate(${(props => props.rotation)}deg);
 `
 
 const Num = styled.button`

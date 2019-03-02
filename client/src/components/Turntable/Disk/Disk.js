@@ -57,7 +57,10 @@ class Disk extends Component {
         this.srcNode.onended = () => {
             // this.setState({ isPaused: true })
         }
-        this.srcNode.buffer = this.buffer;             // use decoded buffer
+        this.srcNode.buffer = this.buffer;
+
+
+        // use decoded buffer
         this.srcNode.connect(this.gainNode);    // create output
         this.srcNode.loop = this.state.isLoop;
         
@@ -85,12 +88,16 @@ class Disk extends Component {
     }
 
     restart = () => {
+        setTimeout(()=>this.setState({isRestarting: false}), 50)
         if(!this.srcNode)return;
+
         
-        this.setState({ currentTime: 0 })
+        this.setState({ currentTime: 0,
+        isRestarting: true })
         this.stop(!this.state.isPaused)
         this.pausedAt = 0
         if (!this.state.isPaused) this.play()
+
 
     }
 
@@ -101,13 +108,6 @@ class Disk extends Component {
         if (!this.state.isPaused) {
             const currentTime = this.actx.currentTime - this.startedAt
 
-            // if(!this.state.isLoop && currentTime >= this.state.duration- 0.01){
-            //     console.log(2)
-            //     this.setState({isPaused: true})
-            //     // this.stop(true)
-
-            // }
-            // console.log(this.lstate.currentTime.toFixed(2))
 
             this.setState({ currentTime: currentTime % this.state.duration })
         }
@@ -118,7 +118,9 @@ class Disk extends Component {
     }
 
     togglePaused = () => {
- 
+        if(!this.state.isAudioLoaded)return;
+
+
         if (this.state.isPaused) this.play()
         else this.stop()
 
@@ -146,7 +148,7 @@ class Disk extends Component {
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected } = this.props
-        const { isPaused, isMuted, isLoop, rotation, duration, isAudioLoaded } = this.state
+        const { isPaused, isMuted, isLoop, rotation, duration, isAudioLoaded, isRestarting } = this.state
 
 
         return (
@@ -184,6 +186,7 @@ class Disk extends Component {
                     toggleMuted={this.toggleMuted}
                     toggleLoop={this.toggleLoop}
                     restart={this.restart}
+                    isRestarting={isRestarting}
                     isPaused={isPaused}
                     isLoop={isLoop}
                     isMuted={isMuted}
@@ -193,11 +196,11 @@ class Disk extends Component {
                     duration={duration}
                     isAudioLoaded={isAudioLoaded}
                 />
-                {
-                    (Object.entries(this.state).map(a => <div>{a[0] + ' : ' + a[1] + '\n'}</div>))
+                {/* {
+                    (Object.entries(this.state).map(a => <div key={a}>{a[0] + ' : ' + a[1] + '\n'}</div>))
 
                 }
-                <div>{'manual :' +this.manualStop}</div>
+                <div>{'manual :' +this.manualStop}</div> */}
             </Fragment>
         )
     }
