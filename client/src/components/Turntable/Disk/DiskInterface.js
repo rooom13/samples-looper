@@ -40,7 +40,7 @@ class DiskInterface extends Component {
             idSrc
         } = this.props
 
-        const isAnimation = true
+        const isAnimation = false
 
 
         const rotation = scale(progress, 0,100,0,360)
