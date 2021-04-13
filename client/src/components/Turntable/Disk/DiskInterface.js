@@ -43,7 +43,7 @@ class DiskInterface extends Component {
         const isAnimation = false
 
 
-        const rotation = scale(progress, 0,100,0,360)
+        const rotation = scale(progress, 0, 100, 0, 360)
 
         return (
             <Wrapper isSelected={isSelected} isTurntableSelected={isTurntableSelected}>
@@ -53,11 +53,10 @@ class DiskInterface extends Component {
                     <Button onClick={restart} isActive={isRestarting} children={'R'} />
                 </Column>
                 <Column>
-                    {isAudioLoaded && isAnimation ? <Animation idSrc={idSrc} buffer={buffer} isPaused={isPaused} progress={progress} width={120} height={120} />
-                        : <VinylWrapper>
-
-                            <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />
-                        </VinylWrapper>}
+                    {isAudioLoaded && isAnimation ?
+                        <Animation idSrc={idSrc} buffer={buffer} isPaused={isPaused} progress={progress} width={120} height={120} />
+                        :
+                        <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
                 </Column>
 
                 < Column>
@@ -65,36 +64,31 @@ class DiskInterface extends Component {
                     <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
                 </Column>
                 < Column>
-                    {<Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />}
+                    <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
                 </Column>
             </Wrapper>
         )
     }
 }
-const VinylWrapper = styled.div`
-width: 3rem;
-`
 
+const vinylSize = "4.5rem";
 
 const Vinyl = styled.img`
-width: 3rem;
-
+    width: ${vinylSize};
     transform: rotate(${(props => props.rotation)}deg);
 `
 const Duration = styled.input`
-width: 3rem;
-
     border: 1px solid black;
     padding: 0.25rem;    
-    width: 35px;
+    width: 2.5rem;
 `
 
 const Num = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 10px;
-    height: 10px;
+    width: 1rem;
+    height: 1rem;
     background-color: black;
     border-radius: 50%;
     padding: 1rem;
@@ -111,7 +105,6 @@ const Column = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 100%;
     margin: 0.25rem;
 `
 

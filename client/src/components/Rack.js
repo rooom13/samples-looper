@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components'
-import KeyHandler, {  KEYDOWN } from 'react-key-handler'
+import KeyHandler, { KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
 
 class Rack extends Component {
@@ -13,41 +13,37 @@ class Rack extends Component {
 
     selectTurntable = (ev, turntable) => {
         ev.preventDefault()
-        if (turntable < 0) turntable = this.props.turntables.length
-        else if (turntable > this.props.turntables.length) turntable = 0
+        const turntableCount = this.props.turntables.length - 1
+
+        if (turntable > turntableCount)
+            turntable = 0
+        else if (turntable < 0)
+            turntable = turntableCount
 
         this.setState({ selectedTurntable: turntable })
     }
     render() {
 
         const { selectedTurntable } = this.state
-        const { turntables } = this.props
-        let turntableCount = 0
+        const { turntables, title } = this.props
 
-  
         return (
-
-            <TurntablesWrapper>
-                <KeyHandler
-                    keyEventName={KEYDOWN}
-                    code={('ArrowRight').toString()}
-                    onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable + 1)}
-                />
-                <KeyHandler
-                    keyEventName={KEYDOWN}
-                    code={('ArrowLeft').toString()}
-                    onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable - 1)}
-                />
-
-                {turntables.map(turntable => {
-                    const turntableIndex = turntableCount
-                    ++turntableCount
-                    return (
-                        <Turntable isSelected={turntableIndex === selectedTurntable} key={turntableCount} name={turntable.name} disks={turntable.loops} />
-                    )
-                }
-                )}
-            </TurntablesWrapper>
+            <div>
+                <h1>{title}</h1>
+                <TurntablesWrapper>
+                    <KeyHandler
+                        keyEventName={KEYDOWN}
+                        code={('ArrowRight').toString()}
+                        onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable + 1)}
+                    />
+                    <KeyHandler
+                        keyEventName={KEYDOWN}
+                        code={('ArrowLeft').toString()}
+                        onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable - 1)}
+                    />
+                    {turntables.map((turntable, i) => <Turntable isSelected={i === selectedTurntable} key={i} name={turntable.name} disks={turntable.loops} />)}
+                </TurntablesWrapper>
+            </div>
         )
     }
 }

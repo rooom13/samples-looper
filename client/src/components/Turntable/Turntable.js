@@ -14,23 +14,23 @@ class Turntable extends Component {
 
     selectDisk = (ev, disk) => {
         ev.preventDefault()
-        if (disk < 0) disk = this.props.disks.length
-        else if (disk > this.props.disks.length) disk = 0
+        const diskCount = this.props.disks.length - 1
+        if (disk < 0) disk = diskCount
+        else if (disk > diskCount) disk = 0
 
         this.setState({ selectedDisk: disk })
     }
     render() {
 
-
-
         let diskCount = 0
-        const { selectedDisk  } = this.state
+        const { selectedDisk } = this.state
         const { disks, isSelected } = this.props
+        const subfolder= disks[0].split("/")[1]
         return (
             <Wrapper>
+                <h3>{subfolder}</h3>
                 {isSelected &&
                     <Fragment>
-
                         <KeyHandler
                             keyEventName={KEYDOWN}
                             code={('ArrowDown').toString()}
@@ -54,12 +54,11 @@ class Turntable extends Component {
                         />
 
                         <Disk
-
                             selectDisk={this.selectDisk}
                             src={loop}
                             index={diskIndex + 1}
                             isTurntableSelected={isSelected}
-                            isSelected={selectedDisk === diskIndex } >{loop}</Disk>
+                            isSelected={selectedDisk === diskIndex} >{loop}</Disk>
                     </Fragment>)
                 }
 
@@ -73,8 +72,7 @@ class Turntable extends Component {
 }
 
 const Wrapper = styled.div`
-border: 2px solid black;
-
-
+    border: 2px solid black;
+    width:100%;
 `
 export default Turntable;

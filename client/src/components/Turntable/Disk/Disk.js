@@ -52,7 +52,6 @@ class Disk extends Component {
     play = () => {
         console.log('play')
 
-        // if(!this.manualStop === 2)
         
         this.srcNode = this.actx.createBufferSource();  // create audio source
         this.srcNode.onended = () => {
@@ -150,11 +149,11 @@ class Disk extends Component {
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting } = this.state
-
-
+        const disk = this.props.src.split("/")[2].split(".")[0]
         return (
 
             <Fragment>
+                <div>{disk}</div>
                 {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -200,11 +199,6 @@ class Disk extends Component {
                     idSrc={src}
 
                 />
-                {/* {
-                    (Object.entries(this.state).map(a => <div key={a}>{a[0] + ' : ' + a[1] + '\n'}</div>))
-
-                }
-                <div>{'manual :' +this.manualStop}</div> */}
                 </Fragment>
         )
     }
