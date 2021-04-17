@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import KeyHandler, { KEYPRESS } from 'react-key-handler'
 import DiskInterface from './DiskInterface'
-import {scale} from '../../../utils/functions'
+import { scale } from '../../../utils/functions'
 
 class Disk extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ class Disk extends Component {
             isPaused: true,
             isMuted: false,
             isLoop: true,
-
+            volume: 1,
             duration: 0,
             currentTime: 0,
         };
@@ -52,7 +52,7 @@ class Disk extends Component {
     play = () => {
         console.log('play')
 
-        
+
         this.srcNode = this.actx.createBufferSource();  // create audio source
         this.srcNode.onended = () => {
             // this.setState({ isPaused: true })
@@ -63,7 +63,7 @@ class Disk extends Component {
         // use decoded buffer
         this.srcNode.connect(this.gainNode);    // create output
         this.srcNode.loop = this.state.isLoop;
-        
+
         const offset = this.pausedAt % this.state.duration
         this.srcNode.start(0, offset)
         this.startedAt = this.actx.currentTime - offset
@@ -74,31 +74,27 @@ class Disk extends Component {
 
 
     stop = (shouldKeep) => {
-        if(!this.srcNode)return
+        if (!this.srcNode) return
         console.log('stop')
-
 
         const elapsed = this.actx.currentTime - this.startedAt
         this.srcNode.stop()
         this.pausedAt = elapsed
 
-        console.log(shouldKeep ? 'shouldKeep' : 'shouldPause')
-        this.setState({isPaused: !shouldKeep})
-
+        this.setState({ isPaused: !shouldKeep })
     }
 
     restart = () => {
-        setTimeout(()=>this.setState({isRestarting: false}), 50)
-        if(!this.srcNode)return;
+        setTimeout(() => this.setState({ isRestarting: false }), 50)
+        if (!this.srcNode) return;
 
-        
-        this.setState({ currentTime: 0,
-        isRestarting: true })
+        this.setState({
+            currentTime: 0,
+            isRestarting: true
+        })
         this.stop(!this.state.isPaused)
         this.pausedAt = 0
         if (!this.state.isPaused) this.play()
-
-
     }
 
     tick = () => {
@@ -118,7 +114,7 @@ class Disk extends Component {
     }
 
     togglePaused = () => {
-        if(!this.state.isAudioLoaded)return;
+        if (!this.state.isAudioLoaded) return;
 
 
         if (this.state.isPaused) this.play()
@@ -127,8 +123,8 @@ class Disk extends Component {
 
     }
     toggleLoop = () => {
-       if(this.srcNode)
-        this.srcNode.loop = !this.state.isLoop;
+        if (this.srcNode)
+            this.srcNode.loop = !this.state.isLoop;
 
         this.setState({
             isLoop: !this.state.isLoop
@@ -136,11 +132,16 @@ class Disk extends Component {
     }
     toggleMuted = () => {
         this.gainNode.gain.setValueAtTime(this.state.isMuted ? 1 : 0, this.actx.currentTime);
-
-
-        // this.audio.muted = !this.state.isMuted
         this.setState({
             isMuted: !this.state.isMuted
+        })
+    }
+
+    handleVolumeChange = (e) => {
+        const volume = e.target.value
+        this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
+        this.setState({
+            volume: volume
         })
     }
 
@@ -148,7 +149,7 @@ class Disk extends Component {
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
-        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting } = this.state
+        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume } = this.state
         const disk = this.props.src.split("/")[2].split(".")[0]
         return (
 
@@ -185,10 +186,12 @@ class Disk extends Component {
                     togglePaused={this.togglePaused}
                     toggleMuted={this.toggleMuted}
                     toggleLoop={this.toggleLoop}
+                    handleVolumeChange={this.handleVolumeChange}
                     restart={this.restart}
                     isRestarting={isRestarting}
                     isPaused={isPaused}
                     isLoop={isLoop}
+                    volume={volume}
                     isMuted={isMuted}
                     isTurntableSelected={isTurntableSelected}
                     isSelected={isSelected}
@@ -197,9 +200,8 @@ class Disk extends Component {
                     isAudioLoaded={isAudioLoaded}
                     buffer={isAudioLoaded && this.buffer}
                     idSrc={src}
-
                 />
-                </Fragment>
+            </Fragment>
         )
     }
 }
@@ -209,4 +211,4 @@ class Disk extends Component {
 
 
 
-export default Disk  
+export default Disk
