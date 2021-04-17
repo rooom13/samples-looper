@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "concurrently": "^4.1.0",
-    "nodemon": "^1.18.10",
-    "web-audio-beat-detector": "^7.0.31"
+    "concurrently": "^6.0.2",
+    "nodemon": "^2.0.7",
+    "web-audio-beat-detector": "^8.1.5"
   },
   "devDependencies": {},
   "scripts": {
