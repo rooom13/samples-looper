@@ -47,25 +47,29 @@ class DiskInterface extends Component {
 
         return (
             <Wrapper isSelected={isSelected} isTurntableSelected={isTurntableSelected}>
-                <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
-                < Column>
-                    <Button onClick={togglePaused} isActive={isPaused} children={'P'} />
-                    <Button onClick={restart} isActive={isRestarting} children={'R'} />
-                </Column>
-                <Column>
-                    {isAudioLoaded && isAnimation ?
-                        <Animation idSrc={idSrc} buffer={buffer} isPaused={isPaused} progress={progress} width={120} height={120} />
-                        :
-                        <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
-                </Column>
-
-                < Column>
-                    <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
-                    <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
-                </Column>
-                < Column>
-                    <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
-                </Column>
+                <Row>
+                    <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
+                    <Column>
+                        <Button onClick={togglePaused} isActive={isPaused} children={'P'} />
+                        <Button onClick={restart} isActive={isRestarting} children={'R'} />
+                    </Column>
+                    <Column>
+                        {isAudioLoaded && isAnimation ?
+                            <Animation idSrc={idSrc} buffer={buffer} isPaused={isPaused} progress={progress} width={120} height={120} />
+                            :
+                            <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
+                    </Column>
+                    < Column>
+                        <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
+                        <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
+                    </Column>
+                    {/* < Column>
+                        <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
+                    </Column> */}
+                </Row>
+                <Row>
+                    <input type="range" min="0" max="2" step="0.01" value={this.props.volume} onChange={this.props.handleVolumeChange} />{(this.props.volume * 100).toFixed()} %
+                </Row>
             </Wrapper>
         )
     }
@@ -108,12 +112,17 @@ const Column = styled.div`
     margin: 0.25rem;
 `
 
-const Wrapper = styled.div`
-    
+const Row = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem;
+    padding: 1rem;
+`
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: ${props => props.isSelected ? props.isTurntableSelected ? 'brown' : 'lightgrey' : 'grey'};
 `
 
