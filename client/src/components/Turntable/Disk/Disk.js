@@ -21,6 +21,7 @@ class Disk extends Component {
 
     _isComponentMounted = false
     componentDidMount() {
+        this.props.onRef(this)
         this._isComponentMounted = true
 
         // html5 audio
@@ -46,19 +47,16 @@ class Disk extends Component {
         // setInterval(()=>       console.log(this.state.currentTime), 1000)
     }
     componentWillUnmount() {
+        this.props.onRef(undefined)
         this._isComponentMounted = false
     }
 
     play = () => {
-        console.log('play')
-
-
         this.srcNode = this.actx.createBufferSource();  // create audio source
         this.srcNode.onended = () => {
             // this.setState({ isPaused: true })
         }
         this.srcNode.buffer = this.buffer;
-
 
         // use decoded buffer
         this.srcNode.connect(this.gainNode);    // create output
@@ -75,8 +73,6 @@ class Disk extends Component {
 
     stop = (shouldKeep) => {
         if (!this.srcNode) return
-        console.log('stop')
-
         const elapsed = this.actx.currentTime - this.startedAt
         this.srcNode.stop()
         this.pausedAt = elapsed
@@ -104,7 +100,6 @@ class Disk extends Component {
         if (!this.state.isPaused) {
             const currentTime = this.actx.currentTime - this.startedAt
 
-
             this.setState({ currentTime: currentTime % this.state.duration })
         }
         const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100)
@@ -115,13 +110,10 @@ class Disk extends Component {
 
     togglePaused = () => {
         if (!this.state.isAudioLoaded) return;
-
-
         if (this.state.isPaused) this.play()
         else this.stop()
-
-
     }
+
     toggleLoop = () => {
         if (this.srcNode)
             this.srcNode.loop = !this.state.isLoop;
@@ -130,29 +122,29 @@ class Disk extends Component {
             isLoop: !this.state.isLoop
         })
     }
+
     toggleMuted = () => {
-        this.gainNode.gain.setValueAtTime(this.state.isMuted ? 1 : 0, this.actx.currentTime);
+        const isMuted = !this.state.isMuted
+        const volume = isMuted ? 0 : this.state.volume
+        this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
         this.setState({
-            isMuted: !this.state.isMuted
+            isMuted: isMuted
         })
     }
-
+    
     handleVolumeChange = (e) => {
         const volume = e.target.value
-        this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
+        this.gainNode.gain.setValueAtTime(this.state.isMuted ? 0 : volume, this.actx.currentTime);
         this.setState({
             volume: volume
         })
     }
-
-
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume } = this.state
         const disk = this.props.src.split("/")[2].split(".")[0]
         return (
-
             <Fragment>
                 <div>{disk}</div>
                 {isTurntableSelected && isSelected &&
@@ -181,6 +173,8 @@ class Disk extends Component {
                 }
 
                 <DiskInterface
+                    setLeftDiskSwitch={this.props.setLeftDiskSwitch}
+                    setRightDiskSwitch={this.props.setRightDiskSwitch}
                     selectDisk={selectDisk}
                     index={index}
                     togglePaused={this.togglePaused}

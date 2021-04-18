@@ -10,7 +10,6 @@ class DiskInterface extends Component {
         isRestarting: false
     };
 
-
     restart = () => {
         this.props.restart()
         this.setState({ isRestarting: true })
@@ -41,8 +40,6 @@ class DiskInterface extends Component {
         } = this.props
 
         const isAnimation = false
-
-
         const rotation = scale(progress, 0, 100, 0, 360)
 
         return (
@@ -59,13 +56,18 @@ class DiskInterface extends Component {
                             :
                             <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
                     </Column>
-                    < Column>
+                    <Column>
                         <Button onClick={toggleMuted} isActive={isMuted} children={'M'} />
                         <Button onClick={toggleLoop} isActive={isLoop} children={'L'} />
                     </Column>
-                    {/* < Column>
+                    <Column>
+                        <Button onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
+                        <Button onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
+                    </Column>
+                    <Column>
                         <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
-                    </Column> */}
+                        <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
+                    </Column>
                 </Row>
                 <Row>
                     <input type="range" min="0" max="2" step="0.01" value={this.props.volume} onChange={this.props.handleVolumeChange} />{(this.props.volume * 100).toFixed()} %
@@ -98,7 +100,7 @@ const Num = styled.button`
     padding: 1rem;
     color: white;
 `
-const Button = styled.button`
+export const Button = styled.button`
     height: 100%;
     ${(props) => (props.isActive && `
         background-color: blue;  `
@@ -116,10 +118,10 @@ const Row = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
 `
 
 const Wrapper = styled.div`
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;

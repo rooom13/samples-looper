@@ -52,8 +52,6 @@ app.get('/api/loops/inFolders/:bpm', function (req, res) {
 app.get('/api/loops/fullList/:bpm', function (req, res) {
 
   const subfolder = req.params.bpm;
-  // console.log(subfolder)
-
 
   fs.readdir(musicFolder + "/" + subfolder, (err, folders) => {
 
