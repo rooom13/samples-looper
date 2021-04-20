@@ -13,16 +13,14 @@ class Rack extends Component {
         isMasterMuted: false,
         leftSwitchDisk: {
             turntable: 0,
-            disk: 1,
+            disk: 0,
             volume: 1
         },
         rightSwitchDisk: {
             turntable: 1,
-            disk: 1,
+            disk: 0,
             volume: 1
-
         }
-
     }
 
     turntables = {}
@@ -115,17 +113,61 @@ class Rack extends Component {
                         disks={turntable.loops}
                     />)}
                 </TurntablesWrapper>
-                <div>pepe</div>
-                <div>
-                    {((this.state.leftSwitchDisk.volume) * 100).toFixed()} %
-                <input type="range" min="0" max="1" step="0.01" value={this.state.rightSwitchDisk.volume} onChange={this.handleSwitchVolumeChange} />
-                    {(this.state.rightSwitchDisk.volume * 100).toFixed()} %
-                </div>
+                <SwitchWrapper>
+                    <SwithBox>
+                        <h3>Switch</h3>
+                        <Row>
+                            <Column>
+                                <ul>
+                                    <li>turntable: {this.state.leftSwitchDisk.turntable}</li>
+                                    <li>disk: {this.state.leftSwitchDisk.disk}</li>
+                                </ul>
+                            </Column>
+                            <Column>
+                                {(this.state.leftSwitchDisk.volume * 100).toFixed()} %
+                            </Column>
+                            <Column>
+                                <input type="range" min="0" max="1" step="0.01" value={this.state.rightSwitchDisk.volume} onChange={this.handleSwitchVolumeChange} />
+                            </Column>
+                            <Column>
+                                {(this.state.rightSwitchDisk.volume * 100).toFixed()} %
+                            </Column>
+                            <Column>
+                                <ul>
+                                    <li>turntable: {this.state.rightSwitchDisk.turntable}</li>
+                                    <li>disk: {this.state.rightSwitchDisk.disk}</li>
+                                </ul>
+                            </Column>
+                        </Row>
+                    </SwithBox>
+                </SwitchWrapper>
             </div>
         )
     }
 }
 
+const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+`
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`
+
+const SwithBox = styled.div`
+    padding: 1rem;
+    background-color: red;
+    text-align: center;
+`
+const SwitchWrapper = styled.div`
+    background-color: grey;
+    justify-content: center;
+    display: flex;
+    padding: 1rem;
+`
 
 const TurntablesWrapper = styled.div`
     display: flex;

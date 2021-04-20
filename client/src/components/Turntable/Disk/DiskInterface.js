@@ -66,7 +66,7 @@ class DiskInterface extends Component {
                     </Column>
                     <Column>
                         <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
-                        <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
+                        <Duration onChange={this.props.handlePlaybackRate} value={this.props.playbackRate} type="number" step="0.001"/>
                     </Column>
                 </Row>
                 <Row>

@@ -12,6 +12,7 @@ class Disk extends Component {
             isMuted: false,
             isLoop: true,
             volume: 1,
+            playbackRate: 1,
             duration: 0,
             currentTime: 0,
         };
@@ -61,6 +62,7 @@ class Disk extends Component {
         // use decoded buffer
         this.srcNode.connect(this.gainNode);    // create output
         this.srcNode.loop = this.state.isLoop;
+        this.srcNode.playbackRate.value = this.state.playbackRate;
 
         const offset = this.pausedAt % this.state.duration
         this.srcNode.start(0, offset)
@@ -140,9 +142,18 @@ class Disk extends Component {
         })
     }
 
+    handlePlaybackRate = (e) => {
+        const playbackRate = e.target.value
+        if(this.srcNode)
+            this.srcNode.playbackRate.value = playbackRate;
+        this.setState({
+            playbackRate: playbackRate
+        })
+    }
+
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
-        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume } = this.state
+        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
         const disk = this.props.src.split("/")[2].split(".")[0]
         return (
             <Fragment>
@@ -181,6 +192,7 @@ class Disk extends Component {
                     toggleMuted={this.toggleMuted}
                     toggleLoop={this.toggleLoop}
                     handleVolumeChange={this.handleVolumeChange}
+                    handlePlaybackRate={this.handlePlaybackRate}
                     restart={this.restart}
                     isRestarting={isRestarting}
                     isPaused={isPaused}
@@ -191,6 +203,7 @@ class Disk extends Component {
                     isSelected={isSelected}
                     progress={progress}
                     duration={duration}
+                    playbackRate={playbackRate}
                     isAudioLoaded={isAudioLoaded}
                     buffer={isAudioLoaded && this.buffer}
                     idSrc={src}

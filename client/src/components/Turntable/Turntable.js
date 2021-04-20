@@ -68,11 +68,11 @@ class Turntable extends Component {
                     </Fragment>
                 }
                 {disks.map((loop, i) => {
-                    const diskIndex = i + 1
+                    const diskIndex = i
                     return (<Fragment key={loop}>
                         <KeyHandler
                             keyEventName={KEYPRESS}
-                            keyValue={(diskIndex + 1).toString()}
+                            keyValue={(diskIndex).toString()}
                             onKeyHandle={(ev) => this.selectDisk(ev, diskIndex)}
                         />
 
