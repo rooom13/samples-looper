@@ -12,6 +12,8 @@ class Disk extends Component {
             isMuted: false,
             isLoop: true,
             volume: 1,
+            playbackRate: 1,
+            originalDuration: 0,
             duration: 0,
             currentTime: 0,
         };
@@ -21,6 +23,7 @@ class Disk extends Component {
 
     _isComponentMounted = false
     componentDidMount() {
+        this.props.onRef(this)
         this._isComponentMounted = true
 
         // html5 audio
@@ -38,6 +41,7 @@ class Disk extends Component {
                 this.buffer = buffer
                 this.setState({
                     isAudioLoaded: true,
+                    originalDuration: buffer.duration,
                     duration: buffer.duration
                 })
             }))
@@ -46,25 +50,23 @@ class Disk extends Component {
         // setInterval(()=>       console.log(this.state.currentTime), 1000)
     }
     componentWillUnmount() {
+        this.props.onRef(undefined)
         this._isComponentMounted = false
     }
 
     play = () => {
-        console.log('play')
-
-
         this.srcNode = this.actx.createBufferSource();  // create audio source
         this.srcNode.onended = () => {
             // this.setState({ isPaused: true })
         }
         this.srcNode.buffer = this.buffer;
 
-
         // use decoded buffer
         this.srcNode.connect(this.gainNode);    // create output
         this.srcNode.loop = this.state.isLoop;
+        this.srcNode.playbackRate.value = this.state.playbackRate;
 
-        const offset = this.pausedAt % this.state.duration
+        const offset = this.pausedAt % this.state.originalDuration
         this.srcNode.start(0, offset)
         this.startedAt = this.actx.currentTime - offset
         this.setState({ isPaused: false })
@@ -75,8 +77,6 @@ class Disk extends Component {
 
     stop = (shouldKeep) => {
         if (!this.srcNode) return
-        console.log('stop')
-
         const elapsed = this.actx.currentTime - this.startedAt
         this.srcNode.stop()
         this.pausedAt = elapsed
@@ -104,10 +104,9 @@ class Disk extends Component {
         if (!this.state.isPaused) {
             const currentTime = this.actx.currentTime - this.startedAt
 
-
             this.setState({ currentTime: currentTime % this.state.duration })
         }
-        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100)
+        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100) * this.state.playbackRate
         this.setState({ progress });
 
         requestAnimationFrame(this.tick.bind(this));
@@ -115,13 +114,10 @@ class Disk extends Component {
 
     togglePaused = () => {
         if (!this.state.isAudioLoaded) return;
-
-
         if (this.state.isPaused) this.play()
         else this.stop()
-
-
     }
+
     toggleLoop = () => {
         if (this.srcNode)
             this.srcNode.loop = !this.state.isLoop;
@@ -130,29 +126,54 @@ class Disk extends Component {
             isLoop: !this.state.isLoop
         })
     }
+
     toggleMuted = () => {
-        this.gainNode.gain.setValueAtTime(this.state.isMuted ? 1 : 0, this.actx.currentTime);
+        const isMuted = !this.state.isMuted
+        const volume = isMuted ? 0 : this.state.volume
+        this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
         this.setState({
-            isMuted: !this.state.isMuted
+            isMuted: isMuted
         })
     }
 
     handleVolumeChange = (e) => {
         const volume = e.target.value
-        this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
+        this.gainNode.gain.setValueAtTime(this.state.isMuted ? 0 : volume, this.actx.currentTime);
         this.setState({
             volume: volume
         })
     }
 
+    handlePlaybackRate = (e) => {
+        const playbackRate = e.target.value
+        if (isNaN(playbackRate)) return
+        
+        if (this.srcNode)
+            this.srcNode.playbackRate.value = playbackRate;
+        this.setState({
+            playbackRate: playbackRate,
+            duration: this.state.originalDuration / playbackRate,
+        })
+    }
 
+    handleDuration = (e) => {
+        const duration = e.target.value
+        if (isNaN(duration)) return
+
+        const playbackRate = duration / this.state.originalDuration
+        if (this.srcNode)
+            this.srcNode.playbackRate.value = playbackRate;
+        this.setState({
+            playbackRate: playbackRate,
+            duration: duration,
+        })
+    }
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
-        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume } = this.state
+        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
         const disk = this.props.src.split("/")[2].split(".")[0]
         return (
-
             <Fragment>
                 <div>{disk}</div>
                 {isTurntableSelected && isSelected &&
@@ -181,12 +202,16 @@ class Disk extends Component {
                 }
 
                 <DiskInterface
+                    setLeftDiskSwitch={this.props.setLeftDiskSwitch}
+                    setRightDiskSwitch={this.props.setRightDiskSwitch}
                     selectDisk={selectDisk}
                     index={index}
                     togglePaused={this.togglePaused}
                     toggleMuted={this.toggleMuted}
                     toggleLoop={this.toggleLoop}
                     handleVolumeChange={this.handleVolumeChange}
+                    handlePlaybackRate={this.handlePlaybackRate}
+                    handleDuration={this.handleDuration}
                     restart={this.restart}
                     isRestarting={isRestarting}
                     isPaused={isPaused}
@@ -197,6 +222,7 @@ class Disk extends Component {
                     isSelected={isSelected}
                     progress={progress}
                     duration={duration}
+                    playbackRate={playbackRate}
                     isAudioLoaded={isAudioLoaded}
                     buffer={isAudioLoaded && this.buffer}
                     idSrc={src}
