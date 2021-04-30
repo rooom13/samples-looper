@@ -13,6 +13,7 @@ class Disk extends Component {
             isLoop: true,
             volume: 1,
             playbackRate: 1,
+            originalDuration: 0,
             duration: 0,
             currentTime: 0,
         };
@@ -40,6 +41,7 @@ class Disk extends Component {
                 this.buffer = buffer
                 this.setState({
                     isAudioLoaded: true,
+                    originalDuration: buffer.duration,
                     duration: buffer.duration
                 })
             }))
@@ -64,7 +66,7 @@ class Disk extends Component {
         this.srcNode.loop = this.state.isLoop;
         this.srcNode.playbackRate.value = this.state.playbackRate;
 
-        const offset = this.pausedAt % this.state.duration
+        const offset = this.pausedAt % this.state.originalDuration
         this.srcNode.start(0, offset)
         this.startedAt = this.actx.currentTime - offset
         this.setState({ isPaused: false })
@@ -104,7 +106,7 @@ class Disk extends Component {
 
             this.setState({ currentTime: currentTime % this.state.duration })
         }
-        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100)
+        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100) * this.state.playbackRate
         this.setState({ progress });
 
         requestAnimationFrame(this.tick.bind(this));
@@ -133,7 +135,7 @@ class Disk extends Component {
             isMuted: isMuted
         })
     }
-    
+
     handleVolumeChange = (e) => {
         const volume = e.target.value
         this.gainNode.gain.setValueAtTime(this.state.isMuted ? 0 : volume, this.actx.currentTime);
@@ -144,10 +146,26 @@ class Disk extends Component {
 
     handlePlaybackRate = (e) => {
         const playbackRate = e.target.value
-        if(this.srcNode)
+        if (isNaN(playbackRate)) return
+        
+        if (this.srcNode)
             this.srcNode.playbackRate.value = playbackRate;
         this.setState({
-            playbackRate: playbackRate
+            playbackRate: playbackRate,
+            duration: this.state.originalDuration / playbackRate,
+        })
+    }
+
+    handleDuration = (e) => {
+        const duration = e.target.value
+        if (isNaN(duration)) return
+
+        const playbackRate = duration / this.state.originalDuration
+        if (this.srcNode)
+            this.srcNode.playbackRate.value = playbackRate;
+        this.setState({
+            playbackRate: playbackRate,
+            duration: duration,
         })
     }
 
@@ -193,6 +211,7 @@ class Disk extends Component {
                     toggleLoop={this.toggleLoop}
                     handleVolumeChange={this.handleVolumeChange}
                     handlePlaybackRate={this.handlePlaybackRate}
+                    handleDuration={this.handleDuration}
                     restart={this.restart}
                     isRestarting={isRestarting}
                     isPaused={isPaused}

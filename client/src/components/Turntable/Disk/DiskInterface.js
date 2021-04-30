@@ -33,6 +33,8 @@ class DiskInterface extends Component {
             index,
             selectDisk,
             duration,
+            playbackRate,
+            volume,
             isAudioLoaded,
             isRestarting,
             buffer,
@@ -63,14 +65,19 @@ class DiskInterface extends Component {
                     <Column>
                         <Button onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
                         <Button onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
+                        <Button onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
                     </Column>
                     <Column>
-                        <Duration onChange={e => console.log(e.target.value)} placeholder={isAudioLoaded && duration} />
-                        <Duration onChange={this.props.handlePlaybackRate} value={this.props.playbackRate} type="number" step="0.001"/>
+                        <Duration onChange={this.props.handleDuration} type={"number"} value={duration} />
+                        <Duration onChange={this.props.handlePlaybackRate} type={"number"} value={playbackRate} step="0.001" />
+                        <Row>
+                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: 0.5 } })} children={'x0.5'} />
+                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: 2 } })} children={'x2'} />
+                        </Row>
                     </Column>
                 </Row>
                 <Row>
-                    <input type="range" min="0" max="2" step="0.01" value={this.props.volume} onChange={this.props.handleVolumeChange} />{(this.props.volume * 100).toFixed()} %
+                    <input type="range" min="0" max="2" step="0.01" value={volume} onChange={this.props.handleVolumeChange} />{(this.props.volume * 100).toFixed()} %
                 </Row>
             </Wrapper>
         )
@@ -86,7 +93,7 @@ const Vinyl = styled.img`
 const Duration = styled.input`
     border: 1px solid black;
     padding: 0.25rem;    
-    width: 2.5rem;
+    width: 5rem;
 `
 
 const Num = styled.button`
