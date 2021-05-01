@@ -65,14 +65,13 @@ class DiskInterface extends Component {
                     <Column>
                         <Button onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
                         <Button onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
-                        <Button onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
                     </Column>
                     <Column>
                         <Duration onChange={this.props.handleDuration} type={"number"} value={duration} />
                         <Duration onChange={this.props.handlePlaybackRate} type={"number"} value={playbackRate} step="0.001" />
                         <Row>
-                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: 0.5 } })} children={'x0.5'} />
-                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: 2 } })} children={'x2'} />
+                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: this.props.playbackRate * 0.5 } })} children={'x0.5'} />
+                            <Button onClick={() => this.props.handlePlaybackRate({ target: { value: this.props.playbackRate * 2 } })} children={'x2'} />
                         </Row>
                     </Column>
                 </Row>
@@ -112,7 +111,6 @@ export const Button = styled.button`
     ${(props) => (props.isActive && `
         background-color: blue;  `
     )};
-
 `
 const Column = styled.div`
     display: flex;

@@ -39,10 +39,16 @@ class Rack extends Component {
 
     toggleMasterPaused = () => {
         Object.keys(this.turntables).map(i => this.turntables[i].togglePaused())
+        this.setState({isMasterPaused: !this.state.isMasterPaused})
     }
 
     toggleMasterMuted = () => {
         Object.keys(this.turntables).map(i => this.turntables[i].toggleMuted())
+        this.setState({isMasterMuted: !this.state.isMasterMuted})
+    }
+    
+    toggleMasterRestart = () => {
+        Object.keys(this.turntables).map(i => this.turntables[i].restart())
     }
 
 
@@ -92,6 +98,7 @@ class Rack extends Component {
                 <h1>{title}</h1>
                 <Button onClick={this.toggleMasterPaused} isActive={isMasterPaused} children={'P'} />
                 <Button onClick={this.toggleMasterMuted} isActive={isMasterMuted} children={'M'} />
+                <Button onClick={this.toggleMasterRestart} isActive={isMasterMuted} children={'R'} />
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}
@@ -159,7 +166,7 @@ const Row = styled.div`
 
 const SwithBox = styled.div`
     padding: 1rem;
-    background-color: red;
+    background-color: #afafaf;
     text-align: center;
 `
 const SwitchWrapper = styled.div`

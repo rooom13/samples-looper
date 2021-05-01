@@ -128,11 +128,15 @@ class Disk extends Component {
     }
 
     toggleMuted = () => {
-        const isMuted = !this.state.isMuted
-        const volume = isMuted ? 0 : this.state.volume
+        const shouldMute = !this.state.isMuted
+        this.setMute(shouldMute)
+    }
+
+    setMute = (shouldMute) => {
+        const volume = shouldMute ? 0 : this.state.volume
         this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
         this.setState({
-            isMuted: isMuted
+            isMuted: shouldMute
         })
     }
 
@@ -147,7 +151,7 @@ class Disk extends Component {
     handlePlaybackRate = (e) => {
         const playbackRate = e.target.value
         if (isNaN(playbackRate)) return
-        
+
         if (this.srcNode)
             this.srcNode.playbackRate.value = playbackRate;
         this.setState({
