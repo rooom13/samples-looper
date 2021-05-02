@@ -70,6 +70,7 @@ class Turntable extends Component {
         return (
 
             <Wrapper>
+                {console.log(isPaused)}
                 <h3>{subfolder}</h3>
                 <Button onClick={this.togglePaused} isActive={isPaused}>P</Button>
                 <Button onClick={this.toggleMuted} isActive={isMuted}>M</Button>
