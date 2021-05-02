@@ -7,6 +7,8 @@ import Disk from './Disk/Disk'
 class Turntable extends Component {
 
     state = {
+        isPaused: true,
+        isMuted: false,
         selectedDisk: 0,
         isSelected: false
 
@@ -33,26 +35,45 @@ class Turntable extends Component {
     }
 
     togglePaused = () => {
-        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].togglePaused())
+        if (this.state.isPaused)
+            this.playAll()
+        else
+            this.stopAll()
+    }
+
+    playAll = () => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex]["play"]())
+        this.setState({ isPaused: false })
+    }
+
+    stopAll = () => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex]["stop"]())
+        this.setState({ isPaused: true })
+    }
+
+    setMuteAll = (shouldMute) => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].setMute(shouldMute))
+        this.setState({ isMuted: shouldMute })
     }
 
     toggleMuted = () => {
-        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].toggleMuted())
+        this.setMuteAll(!this.state.isMuted)
     }
 
     restart = () => {
         Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].restart())
     }
     render() {
-        const { selectedDisk } = this.state
+        const { selectedDisk, isPaused, isMuted } = this.state
         const { disks, isSelected } = this.props
         const subfolder = disks[0].split("/")[1]
         return (
+
             <Wrapper>
                 <h3>{subfolder}</h3>
-                <button onClick={this.togglePaused}>P</button>
-                <button onClick={this.toggleMuted}>M</button>
-                <button onClick={this.restart}>R</button>
+                <Button onClick={this.togglePaused} isActive={isPaused}>P</Button>
+                <Button onClick={this.toggleMuted} isActive={isMuted}>M</Button>
+                <Button onClick={this.restart}>R</Button>
                 {isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -95,5 +116,11 @@ class Turntable extends Component {
 const Wrapper = styled.div`
     border: 2px solid black;
     width: 100%;
+`
+
+export const Button = styled.button`
+    ${(props) => (props.isActive && `
+        background-color: blue;  `
+    )};
 `
 export default Turntable;

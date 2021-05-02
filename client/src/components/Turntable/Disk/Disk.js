@@ -22,6 +22,7 @@ class Disk extends Component {
     }
 
     _isComponentMounted = false
+
     componentDidMount() {
         this.props.onRef(this)
         this._isComponentMounted = true
@@ -46,15 +47,17 @@ class Disk extends Component {
                 })
             }))
         requestAnimationFrame(this.tick.bind(this));
-
-        // setInterval(()=>       console.log(this.state.currentTime), 1000)
     }
+
     componentWillUnmount() {
         this.props.onRef(undefined)
         this._isComponentMounted = false
     }
 
     play = () => {
+        if (!this.state.isPaused) return
+
+        delete this.srcNode
         this.srcNode = this.actx.createBufferSource();  // create audio source
         this.srcNode.onended = () => {
             // this.setState({ isPaused: true })
@@ -70,31 +73,25 @@ class Disk extends Component {
         this.srcNode.start(0, offset)
         this.startedAt = this.actx.currentTime - offset
         this.setState({ isPaused: false })
-        // console.log(this.startedAt)
     }
 
-
-
-    stop = (shouldKeep) => {
+    stop = (resetTime = false, fn = null) => {
         if (!this.srcNode) return
-        const elapsed = this.actx.currentTime - this.startedAt
+        const elapsed = resetTime ? 0 : this.actx.currentTime - this.startedAt
         this.srcNode.stop()
         this.pausedAt = elapsed
-
-        this.setState({ isPaused: !shouldKeep })
+        this.setState({ isPaused: true }, fn)
     }
 
     restart = () => {
-        setTimeout(() => this.setState({ isRestarting: false }), 50)
         if (!this.srcNode) return;
-
+        this.setState({ isRestarting: true })
+        setTimeout(() => this.setState({ isRestarting: false }), 50)
         this.setState({
             currentTime: 0,
-            isRestarting: true
         })
-        this.stop(!this.state.isPaused)
-        this.pausedAt = 0
-        if (!this.state.isPaused) this.play()
+        const shouldKeepPlaying = !this.state.isPaused
+        this.stop(true, shouldKeepPlaying ? this.play : null)
     }
 
     tick = () => {
@@ -128,11 +125,15 @@ class Disk extends Component {
     }
 
     toggleMuted = () => {
-        const isMuted = !this.state.isMuted
-        const volume = isMuted ? 0 : this.state.volume
+        const shouldMute = !this.state.isMuted
+        this.setMute(shouldMute)
+    }
+
+    setMute = (shouldMute) => {
+        const volume = shouldMute ? 0 : this.state.volume
         this.gainNode.gain.setValueAtTime(volume, this.actx.currentTime);
         this.setState({
-            isMuted: isMuted
+            isMuted: shouldMute
         })
     }
 
@@ -147,7 +148,7 @@ class Disk extends Component {
     handlePlaybackRate = (e) => {
         const playbackRate = e.target.value
         if (isNaN(playbackRate)) return
-        
+
         if (this.srcNode)
             this.srcNode.playbackRate.value = playbackRate;
         this.setState({
