@@ -19,7 +19,6 @@ class App extends Component {
     const loops175URL = '/api/loops/inFolders/' + (mainFolder || 175)
     // const loops0URL = '/api/loops/inFolders/0'
 
-    console.log(loops175URL)
     fetch(loops175URL)
       .then(response => response.json())
       .then(data => {

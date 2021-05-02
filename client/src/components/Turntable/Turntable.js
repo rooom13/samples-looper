@@ -35,15 +35,29 @@ class Turntable extends Component {
     }
 
     togglePaused = () => {
-        const fn = this.state.isPaused ? "play" : "stop"
-        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex][fn]())
-        this.setState({ isPaused: !this.state.isPaused })
+        if (this.state.isPaused)
+            this.playAll()
+        else
+            this.stopAll()
+    }
+
+    playAll = () => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex]["play"]())
+        this.setState({ isPaused: false })
+    }
+
+    stopAll = () => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex]["stop"]())
+        this.setState({ isPaused: true })
+    }
+
+    setMuteAll = (shouldMute) => {
+        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].setMute(shouldMute))
+        this.setState({ isMuted: shouldMute })
     }
 
     toggleMuted = () => {
-        const shouldMute = !this.state.isMuted
-        Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].setMute(shouldMute))
-        this.setState({ isMuted: shouldMute })
+        this.setMuteAll(!this.state.isMuted)
     }
 
     restart = () => {

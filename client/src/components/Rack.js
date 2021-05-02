@@ -38,12 +38,13 @@ class Rack extends Component {
     }
 
     toggleMasterPaused = () => {
-        Object.keys(this.turntables).map(i => this.turntables[i].togglePaused())
+        const fn = this.state.isMasterPaused ? "playAll" : "stopAll"
+        Object.keys(this.turntables).map(i => this.turntables[i][fn]())
         this.setState({isMasterPaused: !this.state.isMasterPaused})
     }
 
     toggleMasterMuted = () => {
-        Object.keys(this.turntables).map(i => this.turntables[i].toggleMuted())
+        Object.keys(this.turntables).map(i => this.turntables[i].setMuteAll(!this.state.isMasterMuted))
         this.setState({isMasterMuted: !this.state.isMasterMuted})
     }
     
@@ -98,7 +99,7 @@ class Rack extends Component {
                 <h1>{title}</h1>
                 <Button onClick={this.toggleMasterPaused} isActive={isMasterPaused} children={'P'} />
                 <Button onClick={this.toggleMasterMuted} isActive={isMasterMuted} children={'M'} />
-                <Button onClick={this.toggleMasterRestart} isActive={isMasterMuted} children={'R'} />
+                <Button onClick={this.toggleMasterRestart} children={'R'} />
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}

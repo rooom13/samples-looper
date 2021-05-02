@@ -10,20 +10,12 @@ class DiskInterface extends Component {
         isRestarting: false
     };
 
-    restart = () => {
-        this.props.restart()
-        this.setState({ isRestarting: true })
-        setTimeout(() => this.setState({ isRestarting: false }), 50)
-
-    }
-
     render() {
 
         const {
             togglePaused,
             toggleMuted,
             toggleLoop,
-            restart,
             isTurntableSelected,
             isPaused,
             isLoop,
@@ -41,6 +33,7 @@ class DiskInterface extends Component {
             idSrc
         } = this.props
 
+
         const isAnimation = false
         const rotation = scale(progress, 0, 100, 0, 360)
 
@@ -50,7 +43,7 @@ class DiskInterface extends Component {
                     <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
                     <Column>
                         <Button onClick={togglePaused} isActive={isPaused} children={'P'} />
-                        <Button onClick={restart} isActive={isRestarting} children={'R'} />
+                        <Button onClick={this.props.restart} isActive={isRestarting} children={'R'} />
                     </Column>
                     <Column>
                         {isAudioLoaded && isAnimation ?

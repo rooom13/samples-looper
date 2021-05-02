@@ -13,10 +13,9 @@ class Animation extends Component {
         this.paintBar();
     }
 
-    paintBar(){
+    paintBar() {
 
         const progress = this.props.progress
-        // console.log(this.props.progress)
         let canvas = document.getElementById(`${this.props.idSrc}f`)
         let ctx = canvas.getContext("2d");
 
@@ -32,9 +31,9 @@ class Animation extends Component {
 
         // const salto = Math.floor(channel0.length / amount)
 
-        const x = scale(progress,0,100,0,WIDTH)
+        const x = scale(progress, 0, 100, 0, WIDTH)
 
-        ctx.fillRect(x,0,xsize,HEIGHT)
+        ctx.fillRect(x, 0, xsize, HEIGHT)
 
         // const value1 = Math.abs(channel0[i * salto]) * HEIGHT / 2
         // const value2 = Math.abs(channel1[i * salto]) * HEIGHT / 2
@@ -42,9 +41,6 @@ class Animation extends Component {
         // ctx.fillRect(i * xsize, HEIGHT / 2, xsize, - (value1 + minSize))
         // ctx.fillRect(i * xsize, HEIGHT / 2, xsize, + (value2 + minSize))
     }
-
-
-    
 
     paintWave() {
 
@@ -71,29 +67,27 @@ class Animation extends Component {
             const value1 = Math.abs(channel0[i * salto]) * HEIGHT / 2
             const value2 = Math.abs(channel1[i * salto]) * HEIGHT / 2
 
-            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, - (value1 ))
-            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, + (value2 ))
+            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, - (value1))
+            ctx.fillRect(i * xsize, HEIGHT / 2, xsize, + (value2))
         }
-
-
     }
 
     render() {
         const { width, height, idSrc } = this.props;
         return (
-            <CanvasWrapper    width={width}
-            height={height}>
+            <CanvasWrapper width={width}
+                height={height}>
 
                 <CanvasBack
-                id={idSrc + 'b'}
-                width={width}
-                height={height}
-                />
-                 <CanvasFront
-                id={idSrc + 'f'}
+                    id={idSrc + 'b'}
                     width={width}
                     height={height}
-                 />
+                />
+                <CanvasFront
+                    id={idSrc + 'f'}
+                    width={width}
+                    height={height}
+                />
             </CanvasWrapper>
         );
     }
@@ -101,14 +95,16 @@ class Animation extends Component {
 
 const CanvasWrapper = styled.div`
     position: relative;
-    ${props=> 'width: ' + props.width + 'px;height: ' + props.height + 'px;'}
+    ${props => 'width: ' + props.width + 'px;height: ' + props.height + 'px;'}
 `
+
 const CanvasBack = styled.canvas`
     position: absolute; 
     left: 0; 
     top: 0; 
     z-index: 0;  
 `
+
 const CanvasFront = styled.canvas`
     position: absolute; 
     left: 0; 
