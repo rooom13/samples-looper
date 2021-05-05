@@ -1,26 +1,16 @@
-FROM node:14.16.1-alpine
+FROM node:14.16.1 as build-deps
 
-# TODO: properly deployt he app
-ENV DANGEROUSLY_DISABLE_HOST_CHECK true 
-
+WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
+RUN yarn
+COPY . ./
 
-RUN yarn install --pure-lockfile
+RUN yarn build
 
-RUN mkdir API
-COPY API/package.json API/yarn.lock ./API/
-RUN cd API && yarn install --pure-lockfile
+FROM nginx:1.17-alpine
 
-COPY client/package.json client/yarn.lock ./client/
-RUN cd client && yarn install --pure-lockfile
+COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
+CMD  sed -i 's/80/'"$PORT"'/' /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"
+EXPOSE ${PORT}
 
-COPY API API
-COPY client client
-
-CMD yarn start
-
-# docker run -dp 3000:3000 samples-looper 
-# heroku container:login
-# heroku container:push web
-# docker push registry.heroku.com/samples-looper/web
-# heroku container:release web
+# docker run  -p 80:80 imageId

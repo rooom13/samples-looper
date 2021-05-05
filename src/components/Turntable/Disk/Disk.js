@@ -27,8 +27,12 @@ class Disk extends Component {
         this.props.onRef(this)
         this._isComponentMounted = true
 
+        // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
+        // const src = originSrc.replace("www.dropbox.com", "dl.dropboxusercontent.com")
+        // https://www.dropboxforum.com/t5/Dropbox-API-Support-Feedback/CORS-Access-Control-Allow-Origin/td-p/336055
         // html5 audio
         this.audio = new Audio('music/' + this.props.src)
+        // this.audio = new Audio(src)
         this.audio.loop = true
 
         //web audio API

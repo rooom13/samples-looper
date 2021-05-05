@@ -1,28 +1,28 @@
 {
-  "name": "ikm-random",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "samples-looper",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "concurrently": "^6.0.2",
-    "nodemon": "^2.0.7",
-    "web-audio-beat-detector": "^8.1.5"
+    "list-react-files": "^0.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-key-handler": "^1.2.0-beta.3",
+    "react-scripts": "4.0.3",
+    "styled-components": "^5.2.3"
   },
-  "devDependencies": {},
   "scripts": {
-    "client": "cd client && npm start",
-    "server": "cd API && nodemon start",
-    "start": "concurrently --kill-others \"npm run client\" \"npm run server\"",
-    "shht": "sudo killall -9 node"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rooom13/ikm-random.git"
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rooom13/ikm-random/issues"
-  },
-  "homepage": "https://github.com/rooom13/ikm-random#readme"
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
