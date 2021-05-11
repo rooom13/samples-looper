@@ -165,7 +165,7 @@ class Disk extends Component {
         const duration = e.target.value
         if (isNaN(duration)) return
 
-        const playbackRate = duration / this.state.originalDuration
+        const playbackRate = this.state.originalDuration / duration
         if (this.srcNode)
             this.srcNode.playbackRate.value = playbackRate;
         this.setState({
@@ -203,9 +203,7 @@ class Disk extends Component {
                             keyValue={'r'}
                             onKeyHandle={this.restart}
                         />
-                    </Fragment>
-                }
-
+                    </Fragment>}
                 <DiskInterface
                     setLeftDiskSwitch={this.props.setLeftDiskSwitch}
                     setRightDiskSwitch={this.props.setRightDiskSwitch}
@@ -236,10 +234,5 @@ class Disk extends Component {
         )
     }
 }
-
-
-
-
-
 
 export default Disk
