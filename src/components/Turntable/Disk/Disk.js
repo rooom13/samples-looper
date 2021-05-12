@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import KeyHandler, { KEYPRESS } from 'react-key-handler'
 import DiskInterface from './DiskInterface'
 import { scale } from '../../../utils/functions'
+import styled from 'styled-components';
 
 class Disk extends Component {
     constructor(props) {
@@ -32,7 +33,7 @@ class Disk extends Component {
         this.gainNode = this.actx.createGain()
         this.gainNode.connect(this.actx.destination)
 
-        fetch(this.props.src)
+        fetch(this.props.src, { "mode": "cors" })
             .then((resp) => resp.arrayBuffer())
             .then(buffer => this.actx.decodeAudioData(buffer, buffer => {
                 this.buffer = buffer
@@ -170,8 +171,9 @@ class Disk extends Component {
         const { isSelected, index, selectDisk, isTurntableSelected, src, name } = this.props
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
         return (
-            <Fragment>
+            <Wrapper>
                 <div>{name}</div>
+                <button onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }}>X</button>
                 {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -221,9 +223,13 @@ class Disk extends Component {
                     buffer={isAudioLoaded && this.buffer}
                     idSrc={src}
                 />
-            </Fragment>
+            </Wrapper>
         )
     }
 }
+
+const Wrapper = styled.div`
+    position: relative;
+`
 
 export default Disk

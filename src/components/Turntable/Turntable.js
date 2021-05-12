@@ -16,6 +16,7 @@ class Turntable extends Component {
         newDiskSrc: ""
 
     }
+
     disks = {}
 
     componentDidMount() {
@@ -25,8 +26,6 @@ class Turntable extends Component {
     componentWillUnmount() {
         this.props.onRef(undefined)
     }
-
-
 
     selectDisk = (ev, disk) => {
         ev.preventDefault()
@@ -66,6 +65,7 @@ class Turntable extends Component {
     restart = () => {
         Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].restart())
     }
+
     render() {
         const { selectedDisk, isPaused, isMuted,
             newDiskName, newDiskSrc
@@ -74,7 +74,8 @@ class Turntable extends Component {
 
         return (
             <Wrapper>
-                <h3>{name}</h3>
+                <span><h3>{name}</h3></span>
+                <button onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }}>X</button>
                 <Button onClick={this.togglePaused} isActive={isPaused}>P</Button>
                 <Button onClick={this.toggleMuted} isActive={isMuted}>M</Button>
                 <Button onClick={this.restart}>R</Button>
@@ -110,12 +111,16 @@ class Turntable extends Component {
                             name={name}
                             index={diskIndex}
                             isTurntableSelected={isSelected}
-                            isSelected={selectedDisk === diskIndex} />
+                            isSelected={selectedDisk === diskIndex}
+                            removeDisk={() => this.props.removeDisk(diskIndex)}
+                        />
                     </Fragment>)
                 })}
-                <input name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
-                <input name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
-                <button disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</button>
+                <div>
+                    <input name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
+                    <input name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
+                    <button disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</button>
+                </div>
             </Wrapper>
         )
     }
@@ -133,6 +138,7 @@ class Turntable extends Component {
 }
 
 const Wrapper = styled.div`
+    position: relative;
     border: 2px solid black;
     width: 100%;
 `
@@ -142,4 +148,5 @@ export const Button = styled.button`
         background-color: blue;  `
     )};
 `
+
 export default Turntable;

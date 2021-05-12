@@ -122,16 +122,19 @@ class Rack extends Component {
                         code={('ArrowLeft').toString()}
                         onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable - 1)}
                     />
-                    {turntables && turntables.map((turntable, i) => <Turntable
-                        onRef={ref => this.turntables[i] = ref}
-                        key={i}
-                        turntableIndex={i}
-                        isSelected={i === selectedTurntable}
-                        setDiskSwitch={this.setDiskSwitch}
-                        name={turntable.name}
-                        disks={turntable.disks}
-                        addDisk={(newDiskName, newDiskSrc) => this.props.addDiskToTurntable(i, newDiskName, newDiskSrc)}
-                    />)}
+                    {turntables && turntables.map((turntable, i) =>
+                        <Turntable
+                            onRef={ref => this.turntables[i] = ref}
+                            key={i}
+                            turntableIndex={i}
+                            isSelected={i === selectedTurntable}
+                            setDiskSwitch={this.setDiskSwitch}
+                            name={turntable.name}
+                            disks={turntable.disks}
+                            addDisk={(newDiskName, newDiskSrc) => this.props.addDisk(i, newDiskName, newDiskSrc)}
+                            removeTurntable={()=>this.props.removeTurntable(i)}
+                            removeDisk={(diskIndex)=>this.props.removeDisk(i, diskIndex)}
+                        />)}
                     <div>
                         <input placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />
                         <button disabled={!newTurntableName} onClick={this.onAddTurntableClicked}>+</button>

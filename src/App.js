@@ -84,15 +84,27 @@ class App extends Component {
     this.setTurntables(turntables)
   }
 
-  addDiskToTurntable = (turntableIndex, newDiskName, newDiskSrc) => {
+  addDisk = (turntableIndex, newDiskName, newDiskSrc) => {
     let turntables = this.state.turntables
     turntables[turntableIndex].disks.push({ name: newDiskName, src: newDiskSrc.replace("www.dropbox.com", "dl.dropboxusercontent.com") })
+    this.setTurntables(turntables)
+  }
+
+  removeDisk = (turntableIndex, diskIndex) => {
+    let turntables = this.state.turntables
+    turntables[turntableIndex].disks.splice(diskIndex, 1)
     this.setTurntables(turntables)
   }
 
   addTurntable = (newTurntableName) => {
     let turntables = this.state.turntables
     turntables.push({ name: newTurntableName, disks: [] })
+    this.setTurntables(turntables)
+  }
+
+  removeTurntable = (turntableIndex) => {
+    let turntables = this.state.turntables
+    turntables.splice(turntableIndex, 1)
     this.setTurntables(turntables)
   }
 
@@ -117,8 +129,10 @@ class App extends Component {
         {turntables && <Rack
           title={folder}
           turntables={turntables}
-          addDiskToTurntable={this.addDiskToTurntable}
+          addDisk={this.addDisk}
+          removeDisk={this.removeDisk}
           addTurntable={this.addTurntable}
+          removeTurntable={this.removeTurntable}
         />}
       </Fragment>
     )
