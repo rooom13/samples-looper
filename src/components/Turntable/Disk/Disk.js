@@ -27,20 +27,12 @@ class Disk extends Component {
         this.props.onRef(this)
         this._isComponentMounted = true
 
-        // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
-        // const src = originSrc.replace("www.dropbox.com", "dl.dropboxusercontent.com")
-        // https://www.dropboxforum.com/t5/Dropbox-API-Support-Feedback/CORS-Access-Control-Allow-Origin/td-p/336055
-        // html5 audio
-        this.audio = new Audio('music/' + this.props.src)
-        // this.audio = new Audio(src)
-        this.audio.loop = true
-
         //web audio API
         this.actx = new (window.AudioContext || window.webkitAudioContext)()
         this.gainNode = this.actx.createGain()
         this.gainNode.connect(this.actx.destination)
 
-        fetch('music/' + this.props.src, { mode: "cors" })
+        fetch(this.props.src)
             .then((resp) => resp.arrayBuffer())
             .then(buffer => this.actx.decodeAudioData(buffer, buffer => {
                 this.buffer = buffer
@@ -107,7 +99,7 @@ class Disk extends Component {
 
             this.setState({ currentTime: currentTime % this.state.duration })
         }
-        const progress = scale(this.state.currentTime, 0, this.audio.duration, 0, 100) * this.state.playbackRate
+        const progress = scale(this.state.currentTime, 0, this.state.originalDuration, 0, 100) * this.state.playbackRate
         this.setState({ progress });
 
         requestAnimationFrame(this.tick.bind(this));
@@ -175,12 +167,11 @@ class Disk extends Component {
     }
 
     render() {
-        const { isSelected, index, selectDisk, isTurntableSelected, src } = this.props
+        const { isSelected, index, selectDisk, isTurntableSelected, src, name } = this.props
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
-        const disk = this.props.src.split("/")[2].split(".")[0]
         return (
             <Fragment>
-                <div>{disk}</div>
+                <div>{name}</div>
                 {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler

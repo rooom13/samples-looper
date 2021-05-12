@@ -10,7 +10,10 @@ class Turntable extends Component {
         isPaused: true,
         isMuted: false,
         selectedDisk: 0,
-        isSelected: false
+        isSelected: false,
+
+        newDiskName: "",
+        newDiskSrc: ""
 
     }
     disks = {}
@@ -64,14 +67,14 @@ class Turntable extends Component {
         Object.keys(this.disks).map(diskIndex => this.disks[diskIndex].restart())
     }
     render() {
-        const { selectedDisk, isPaused, isMuted } = this.state
-        const { disks, isSelected } = this.props
-        const subfolder = disks[0].split("/")[1]
-        return (
+        const { selectedDisk, isPaused, isMuted,
+            newDiskName, newDiskSrc
+        } = this.state
+        const { disks, isSelected, name } = this.props
 
+        return (
             <Wrapper>
-                {console.log(isPaused)}
-                <h3>{subfolder}</h3>
+                <h3>{name}</h3>
                 <Button onClick={this.togglePaused} isActive={isPaused}>P</Button>
                 <Button onClick={this.toggleMuted} isActive={isMuted}>M</Button>
                 <Button onClick={this.restart}>R</Button>
@@ -89,28 +92,43 @@ class Turntable extends Component {
                         />
                     </Fragment>
                 }
-                {disks.map((loop, i) => {
+                {disks && disks.map((disk, i) => {
+                    const { name, src } = disk
                     const diskIndex = i
-                    return (<Fragment key={loop}>
+                    return (<Fragment key={i}>
                         <KeyHandler
                             keyEventName={KEYPRESS}
                             keyValue={(diskIndex).toString()}
                             onKeyHandle={(ev) => this.selectDisk(ev, diskIndex)}
                         />
-
                         <Disk
                             setLeftDiskSwitch={() => this.props.setDiskSwitch("left", this.props.turntableIndex, diskIndex)}
                             setRightDiskSwitch={() => this.props.setDiskSwitch("right", this.props.turntableIndex, diskIndex)}
                             onRef={ref => this.disks[diskIndex] = ref}
                             selectDisk={this.selectDisk}
-                            src={loop}
+                            src={src}
+                            name={name}
                             index={diskIndex}
                             isTurntableSelected={isSelected}
-                            isSelected={selectedDisk === diskIndex} >{loop}</Disk>
+                            isSelected={selectedDisk === diskIndex} />
                     </Fragment>)
                 })}
+                <input name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
+                <input name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
+                <button disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</button>
             </Wrapper>
         )
+    }
+
+    onNewDiskClicked = () => {
+        this.props.addDisk(this.state.newDiskName, this.state.newDiskSrc)
+        this.setState({ newDiskName: "", newDiskSrc: "" })
+    }
+
+    handleFormChange = (e) => {
+        const field = e.target.name
+        const value = e.target.value
+        this.setState({ [field]: value })
     }
 }
 

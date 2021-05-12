@@ -20,10 +20,11 @@ class Rack extends Component {
             turntable: 1,
             disk: 0,
             volume: 1
-        }
+        },
+        newTurntableName: ""
     }
 
-    turntables = {}
+    turntables = []
 
     selectTurntable = (ev, turntable) => {
         ev.preventDefault()
@@ -40,18 +41,17 @@ class Rack extends Component {
     toggleMasterPaused = () => {
         const fn = this.state.isMasterPaused ? "playAll" : "stopAll"
         Object.keys(this.turntables).map(i => this.turntables[i][fn]())
-        this.setState({isMasterPaused: !this.state.isMasterPaused})
+        this.setState({ isMasterPaused: !this.state.isMasterPaused })
     }
 
     toggleMasterMuted = () => {
         Object.keys(this.turntables).map(i => this.turntables[i].setMuteAll(!this.state.isMasterMuted))
-        this.setState({isMasterMuted: !this.state.isMasterMuted})
+        this.setState({ isMasterMuted: !this.state.isMasterMuted })
     }
-    
+
     toggleMasterRestart = () => {
         Object.keys(this.turntables).map(i => this.turntables[i].restart())
     }
-
 
     setDiskSwitch = (which, turntable, disk) => {
         if (which === "left") {
@@ -86,12 +86,23 @@ class Rack extends Component {
             leftSwitchDisk: { ...this.state.leftSwitchDisk, volume: leftSwitchDiskVolume },
             rightSwitchDisk: { ...this.state.rightSwitchDisk, volume: rightSwitchDiskVolume }
         })
+    }
 
+    handleNewTurnTableNameChange = (e) => {
+        const newTurntableName = e.target.value
+        this.setState({ newTurntableName })
+    }
+
+    onAddTurntableClicked = () => {
+        this.props.addTurntable(this.state.newTurntableName)
+        this.setState({ newTurntableName: "" })
     }
 
     render() {
 
-        const { selectedTurntable, isMasterPaused, isMasterMuted } = this.state
+        const { selectedTurntable, isMasterPaused, isMasterMuted,
+            newTurntableName
+        } = this.state
         const { turntables, title } = this.props
 
         return (
@@ -111,15 +122,20 @@ class Rack extends Component {
                         code={('ArrowLeft').toString()}
                         onKeyHandle={(ev) => this.selectTurntable(ev, selectedTurntable - 1)}
                     />
-                    {turntables.map((turntable, i) => <Turntable
+                    {turntables && turntables.map((turntable, i) => <Turntable
                         onRef={ref => this.turntables[i] = ref}
                         key={i}
                         turntableIndex={i}
                         isSelected={i === selectedTurntable}
                         setDiskSwitch={this.setDiskSwitch}
                         name={turntable.name}
-                        disks={turntable.loops}
+                        disks={turntable.disks}
+                        addDisk={(newDiskName, newDiskSrc) => this.props.addDiskToTurntable(i, newDiskName, newDiskSrc)}
                     />)}
+                    <div>
+                        <input placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />
+                        <button disabled={!newTurntableName} onClick={this.onAddTurntableClicked}>+</button>
+                    </div>
                 </TurntablesWrapper>
                 <SwitchWrapper>
                     <SwithBox>

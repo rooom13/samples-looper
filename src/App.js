@@ -3,16 +3,17 @@ import React, { Component } from 'react';
 import dataS from './musicFiles.json'
 
 import Rack from './components/Rack'
+import { Fragment } from 'react/cjs/react.production.min';
 
 
 class App extends Component {
 
-  state = {}
+  state = {
+    turntables: [],
+    turntablesStr: ""
+  }
 
-
-
-  componentDidMount() {
-
+  getDefaultMusic = () => {
     const mainFolder = new URLSearchParams(window.location.search).get("folder") || 175;
 
     const path = "client/public/music/" + mainFolder + "/"
@@ -29,33 +30,97 @@ class App extends Component {
       beforeData[subFolder].push(f)
     })
 
-    const data = {
-      folders: Object.keys(beforeData).map(subFolder => {
+    const music = {
+      title: mainFolder,
+      turntables: Object.keys(beforeData).map(subFolder => {
         return {
           name: subFolder,
-          loops: beforeData[subFolder].map(s => mainFolder + "/" + s)
+          disks: beforeData[subFolder].map(s => {
+            return { name: s.split("/")[1].split(".")[0], src: "music/" + mainFolder + "/" + s }
+          })
         }
       })
     }
+    return music
+  }
 
+  getSavedMusic = () => {
+    try {
+      return JSON.parse(window.localStorage["turntables"])
+    } catch {
+      return undefined
+    }
+  }
+
+  componentDidMount() {
+
+    const turntablesLocalStorage = this.getSavedMusic()
+
+    const data = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : this.getDefaultMusic()
+
+    // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
+
+    this.setTurntables(data.turntables)
     this.setState({
-      folder: mainFolder,
-      folders: data.folders,
+      folder: data.title,
     })
   }
 
+  setTurntables = (turntables) => {
+    this.setState({
+      turntables: turntables,
+      turntablesStr: JSON.stringify(turntables, null, "\t")
+    })
+    window.localStorage["turntables"] = JSON.stringify(turntables)
+  }
+
+  handleturntablesChange = (e) => {
+    const turntablesStr = e.target.value
+    this.setState({ turntablesStr: turntablesStr })
+  }
+
+  onApplyClicked = () => {
+    const turntables = JSON.parse(this.state.turntablesStr)
+    this.setTurntables(turntables)
+  }
+
+  addDiskToTurntable = (turntableIndex, newDiskName, newDiskSrc) => {
+    let turntables = this.state.turntables
+    turntables[turntableIndex].disks.push({ name: newDiskName, src: newDiskSrc.replace("www.dropbox.com", "dl.dropboxusercontent.com") })
+    this.setTurntables(turntables)
+  }
+
+  addTurntable = (newTurntableName) => {
+    let turntables = this.state.turntables
+    turntables.push({ name: newTurntableName, disks: [] })
+    this.setTurntables(turntables)
+  }
 
   render() {
-    const { folder, folders } = this.state
+    const { folder, turntables, turntablesStr } = this.state
+    let isInputValid = true
+    try {
+      JSON.parse(turntablesStr)
+    } catch {
+      isInputValid = false
+    }
 
-
-    if (!folders) return <div>Loading</div>
+    if (!turntables) return <div>Loading</div>
 
     return (
-      <Rack
-        title={folder}
-        turntables={folders}
-      />
+      <Fragment>
+        {/* <textarea
+          style={{ width: "800px", height: "100px" }}
+          value={turntablesStr}
+          onChange={this.handleturntablesChange} />
+        <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button> */}
+        {turntables && <Rack
+          title={folder}
+          turntables={turntables}
+          addDiskToTurntable={this.addDiskToTurntable}
+          addTurntable={this.addTurntable}
+        />}
+      </Fragment>
     )
   }
 }
