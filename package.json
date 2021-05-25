@@ -8,7 +8,8 @@
     "react-dom": "^17.0.2",
     "react-key-handler": "^1.2.0-beta.3",
     "react-scripts": "4.0.3",
-    "styled-components": "^5.2.3"
+    "styled-components": "^5.2.3",
+    "web-audio-beat-detector": "^8.1.7"
   },
   "scripts": {
     "start": "react-scripts start",

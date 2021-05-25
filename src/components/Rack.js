@@ -26,6 +26,10 @@ class Rack extends Component {
 
     turntables = []
 
+    componentWillUnmount() {
+        delete this.turntables
+    }
+
     selectTurntable = (ev, turntable) => {
         ev.preventDefault()
         const turntableCount = this.props.turntables.length - 1
@@ -98,6 +102,11 @@ class Rack extends Component {
         this.setState({ newTurntableName: "" })
     }
 
+    removeTurntable = (turntableIndex) => {
+        this.turntables.splice(turntableIndex, 1)
+        this.props.removeTurntable(turntableIndex)
+    }
+
     render() {
 
         const { selectedTurntable, isMasterPaused, isMasterMuted,
@@ -124,7 +133,11 @@ class Rack extends Component {
                     />
                     {turntables && turntables.map((turntable, i) =>
                         <Turntable
-                            onRef={ref => this.turntables[i] = ref}
+                            onRef={ref => {
+                                if (ref)
+                                    this.turntables[i] = ref
+                                else delete this.turntables[i]
+                            }}
                             key={i}
                             turntableIndex={i}
                             isSelected={i === selectedTurntable}
@@ -132,8 +145,8 @@ class Rack extends Component {
                             name={turntable.name}
                             disks={turntable.disks}
                             addDisk={(newDiskName, newDiskSrc) => this.props.addDisk(i, newDiskName, newDiskSrc)}
-                            removeTurntable={()=>this.props.removeTurntable(i)}
-                            removeDisk={(diskIndex)=>this.props.removeDisk(i, diskIndex)}
+                            removeTurntable={() => this.removeTurntable(i)}
+                            removeDisk={(diskIndex) => this.props.removeDisk(i, diskIndex)}
                         />)}
                     <div>
                         <input placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />

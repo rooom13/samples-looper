@@ -14,10 +14,9 @@ class Turntable extends Component {
 
         newDiskName: "",
         newDiskSrc: ""
-
     }
 
-    disks = {}
+    disks = []
 
     componentDidMount() {
         this.props.onRef(this)
@@ -25,6 +24,7 @@ class Turntable extends Component {
 
     componentWillUnmount() {
         this.props.onRef(undefined)
+        this.disks = []
     }
 
     selectDisk = (ev, disk) => {
@@ -105,14 +105,18 @@ class Turntable extends Component {
                         <Disk
                             setLeftDiskSwitch={() => this.props.setDiskSwitch("left", this.props.turntableIndex, diskIndex)}
                             setRightDiskSwitch={() => this.props.setDiskSwitch("right", this.props.turntableIndex, diskIndex)}
-                            onRef={ref => this.disks[diskIndex] = ref}
+                            onRef={ref => {
+                                if (ref) this.disks[diskIndex] = ref
+                                else delete this.disks[diskIndex]
+                            }}
                             selectDisk={this.selectDisk}
                             src={src}
+                            key={src} // needed for remounting
                             name={name}
                             index={diskIndex}
                             isTurntableSelected={isSelected}
                             isSelected={selectedDisk === diskIndex}
-                            removeDisk={() => this.props.removeDisk(diskIndex)}
+                            removeDisk={(() => this.removeDisk(diskIndex))}
                         />
                     </Fragment>)
                 })}
@@ -123,6 +127,11 @@ class Turntable extends Component {
                 </div>
             </Wrapper>
         )
+    }
+
+    removeDisk = (diskIndex) => {
+        this.disks.splice(diskIndex, 1)
+        this.props.removeDisk(diskIndex)
     }
 
     onNewDiskClicked = () => {

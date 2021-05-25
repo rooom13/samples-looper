@@ -3,6 +3,7 @@ import KeyHandler, { KEYPRESS } from 'react-key-handler'
 import DiskInterface from './DiskInterface'
 import { scale } from '../../../utils/functions'
 import styled from 'styled-components';
+// import { analyze } from 'web-audio-beat-detector';
 
 class Disk extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class Disk extends Component {
             originalDuration: 0,
             duration: 0,
             currentTime: 0,
+            tempo: null
         };
         this.startedAt = 0
         this.pausedAt = 0
@@ -27,12 +29,10 @@ class Disk extends Component {
     componentDidMount() {
         this.props.onRef(this)
         this._isComponentMounted = true
-
         //web audio API
         this.actx = new (window.AudioContext || window.webkitAudioContext)()
         this.gainNode = this.actx.createGain()
         this.gainNode.connect(this.actx.destination)
-
         fetch(this.props.src, { "mode": "cors" })
             .then((resp) => resp.arrayBuffer())
             .then(buffer => this.actx.decodeAudioData(buffer, buffer => {
@@ -42,6 +42,10 @@ class Disk extends Component {
                     originalDuration: buffer.duration,
                     duration: buffer.duration
                 })
+                // analyze(this.buffer)
+                //     .then((tempo) => {
+                //         this.setState({ tempo })
+                //     })
             }))
         requestAnimationFrame(this.tick.bind(this));
     }
@@ -172,7 +176,7 @@ class Disk extends Component {
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
         return (
             <Wrapper>
-                <div>{name}</div>
+                <div>{name}</div>{this.state.tempo}
                 <button onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }}>X</button>
                 {isTurntableSelected && isSelected &&
                     <Fragment>

@@ -1,134 +1,127 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
-import dataS from './musicFiles.json'
-
+import demoProjects from './demoProjects.json'
 import Rack from './components/Rack'
-import { Fragment } from 'react/cjs/react.production.min';
 
 
 class App extends Component {
 
   state = {
-    turntables: [],
-    turntablesStr: ""
-  }
-
-  getDefaultMusic = () => {
-    const mainFolder = new URLSearchParams(window.location.search).get("folder") || 175;
-
-    const path = "client/public/music/" + mainFolder + "/"
-    const files = dataS
-      .filter(x => x.startsWith(path))
-      .map(s => s.replace(path, ""))
-
-    const beforeData = {}
-
-    files.forEach(f => {
-      const s = f.split("/")
-      const subFolder = s[0]
-      beforeData[subFolder] = beforeData[subFolder] || []
-      beforeData[subFolder].push(f)
-    })
-
-    const music = {
-      title: mainFolder,
-      turntables: Object.keys(beforeData).map(subFolder => {
-        return {
-          name: subFolder,
-          disks: beforeData[subFolder].map(s => {
-            return { name: s.split("/")[1].split(".")[0], src: "music/" + mainFolder + "/" + s }
-          })
-        }
-      })
-    }
-    return music
+    project: {},
+    projectStr: "",
+    isJsonEditShown: false,
+    selectedProject: "175"
   }
 
   getSavedMusic = () => {
     try {
-      return JSON.parse(window.localStorage["turntables"])
+      return JSON.parse(window.localStorage["project"])
     } catch {
       return undefined
     }
   }
 
   componentDidMount() {
-
-    const turntablesLocalStorage = this.getSavedMusic()
-
-    const data = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : this.getDefaultMusic()
+    const turntablesLocalStorage = null // this.getSavedMusic()
+    const project = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : demoProjects[this.state.selectedProject]
 
     // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
-
-    this.setTurntables(data.turntables)
-    this.setState({
-      folder: data.title,
-    })
+    this.setProject(project)
   }
 
   setTurntables = (turntables) => {
+    let project = this.state.project
+    project.turntables = turntables
+    this.setProject(project)
+  }
+
+  setProject = (project) => {
     this.setState({
-      turntables: turntables,
-      turntablesStr: JSON.stringify(turntables, null, "\t")
+      project,
+      projectStr: JSON.stringify(project, null, "\t")
     })
-    window.localStorage["turntables"] = JSON.stringify(turntables)
+    window.localStorage["project"] = JSON.stringify(project)
   }
 
   handleturntablesChange = (e) => {
-    const turntablesStr = e.target.value
-    this.setState({ turntablesStr: turntablesStr })
+    const projectStr = e.target.value
+    this.setState({ projectStr: projectStr })
   }
 
   onApplyClicked = () => {
-    const turntables = JSON.parse(this.state.turntablesStr)
-    this.setTurntables(turntables)
+    const project = JSON.parse(this.state.projectStr)
+    this.setProject(project)
   }
 
   addDisk = (turntableIndex, newDiskName, newDiskSrc) => {
-    let turntables = this.state.turntables
+    let turntables = this.state.project.turntables
     turntables[turntableIndex].disks.push({ name: newDiskName, src: newDiskSrc.replace("www.dropbox.com", "dl.dropboxusercontent.com") })
     this.setTurntables(turntables)
   }
 
   removeDisk = (turntableIndex, diskIndex) => {
-    let turntables = this.state.turntables
+    let turntables = this.state.project.turntables
     turntables[turntableIndex].disks.splice(diskIndex, 1)
     this.setTurntables(turntables)
   }
 
   addTurntable = (newTurntableName) => {
-    let turntables = this.state.turntables
+    let turntables = this.state.project.turntables
     turntables.push({ name: newTurntableName, disks: [] })
     this.setTurntables(turntables)
   }
 
   removeTurntable = (turntableIndex) => {
-    let turntables = this.state.turntables
+    let turntables = this.state.project.turntables
     turntables.splice(turntableIndex, 1)
     this.setTurntables(turntables)
   }
 
+  toggleJsonEdit = () => {
+    this.setState({ isJsonEditShown: !this.state.isJsonEditShown })
+  }
+
+  handleSelectedProjectChange = (e) => {
+    const value = e.target.value
+    this.setState({ selectedProject: value })
+    this.setProject(demoProjects[value])
+  }
+
   render() {
-    const { folder, turntables, turntablesStr } = this.state
+    const { project, projectStr,
+      isJsonEditShown, selectedProject
+    } = this.state
     let isInputValid = true
     try {
-      JSON.parse(turntablesStr)
+      JSON.parse(projectStr)
     } catch {
       isInputValid = false
     }
 
-    if (!turntables) return <div>Loading</div>
+    if (!project) return <div>Loading</div>
 
     return (
       <Fragment>
-        {/* <textarea
-          style={{ width: "800px", height: "100px" }}
-          value={turntablesStr}
-          onChange={this.handleturntablesChange} />
-        <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button> */}
-        {turntables && <Rack
-          title={folder}
-          turntables={turntables}
+        <button onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</button>
+        {isJsonEditShown &&
+          <Fragment>
+            <textarea
+              style={{ width: "800px", height: "400px" }}
+              value={projectStr}
+              onChange={this.handleturntablesChange} />
+            <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button>
+          </Fragment>}
+        <select
+          name="selectedProject"
+          onChange={this.handleSelectedProjectChange}
+          value={selectedProject}
+        >{Object.keys(demoProjects).map(projectName =>
+          <option key={projectName} value={projectName}>{projectName}</option>
+        )}
+        </select>
+        {project.turntables && <Rack
+          title={project.name}
+          turntables={project.turntables}
           addDisk={this.addDisk}
           removeDisk={this.removeDisk}
           addTurntable={this.addTurntable}
