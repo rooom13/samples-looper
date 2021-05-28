@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
-import { Button } from './Turntable/Disk/DiskInterface.js'
+import TypicalButton from '../components/TypicalButton'
 
 class Rack extends Component {
 
@@ -122,11 +122,11 @@ class Rack extends Component {
         const { turntables, title } = this.props
 
         return (
-            <div>
+            <Wrapper>
                 <h1>{title}</h1>
-                <Button onClick={this.toggleMasterPaused} isActive={isMasterPaused} children={'P'} />
-                <Button onClick={this.toggleMasterMuted} isActive={isMasterMuted} children={'M'} />
-                <Button onClick={this.toggleMasterRestart} children={'R'} />
+                <TypicalButton onClick={this.toggleMasterPaused} isActive={isMasterPaused} children={'P'} />
+                <TypicalButton onClick={this.toggleMasterMuted} isActive={isMasterMuted} children={'M'} />
+                <TypicalButton onClick={this.toggleMasterRestart} children={'R'} />
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}
@@ -157,7 +157,7 @@ class Rack extends Component {
                         />)}
                     <div>
                         <input placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />
-                        <button disabled={!newTurntableName} onClick={this.onAddTurntableClicked}>+</button>
+                        <TypicalButton disabled={!newTurntableName} onClick={this.onAddTurntableClicked}>+</TypicalButton>
                     </div>
                 </TurntablesWrapper>
                 <SwitchWrapper>
@@ -190,10 +190,15 @@ class Rack extends Component {
                         </Row>
                     </SwithBox>
                 </SwitchWrapper>
-            </div>
+            </Wrapper>
         )
     }
 }
+
+const Wrapper = styled.div`
+    width: 100%;
+    overflow-y: hidden;
+`
 
 const Column = styled.div`
     display: flex;
@@ -221,6 +226,8 @@ const SwitchWrapper = styled.div`
 const TurntablesWrapper = styled.div`
     display: flex;
     flex-direction: row;
-`
+    overflow: scroll;
+    height: 60vh;
+`   
 
 export default Rack;

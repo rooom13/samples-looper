@@ -1,8 +1,16 @@
 import React, { Component, Fragment } from 'react';
 
+import { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './components/Themes';
+import { GlobalStyles } from './components/globalStyles';
+
 import demoProjects from './demoProjects.json'
 import Rack from './components/Rack'
+import TypicalButton from './components/TypicalButton'
 
+
+const DEFAULT_THEME = "dark"
+const DEFAULT_PROJECT = "175"
 
 class App extends Component {
 
@@ -10,7 +18,8 @@ class App extends Component {
     project: {},
     projectStr: "",
     isJsonEditShown: false,
-    selectedProject: "175"
+    selectedProject: DEFAULT_PROJECT,
+    theme: DEFAULT_THEME
   }
 
   getSavedMusic = () => {
@@ -23,10 +32,13 @@ class App extends Component {
 
   componentDidMount() {
     const turntablesLocalStorage = null // this.getSavedMusic()
+
+    const theme = window.localStorage["theme"] || DEFAULT_THEME
     const project = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : demoProjects[this.state.selectedProject]
 
     // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
     this.setProject(project)
+    this.setState({ theme })
   }
 
   setTurntables = (turntables) => {
@@ -81,6 +93,10 @@ class App extends Component {
     this.setState({ isJsonEditShown: !this.state.isJsonEditShown })
   }
 
+  toggleTheme = () => {
+    this.setState({ theme: this.state.theme === "dark" ? "light" : "dark" })
+  }
+
   handleSelectedProjectChange = (e) => {
     const value = e.target.value
     this.setState({ selectedProject: value })
@@ -89,7 +105,7 @@ class App extends Component {
 
   render() {
     const { project, projectStr,
-      isJsonEditShown, selectedProject
+      isJsonEditShown, selectedProject, theme
     } = this.state
     let isInputValid = true
     try {
@@ -102,31 +118,36 @@ class App extends Component {
 
     return (
       <Fragment>
-        <button onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</button>
-        {isJsonEditShown &&
-          <Fragment>
-            <textarea
-              style={{ width: "800px", height: "400px" }}
-              value={projectStr}
-              onChange={this.handleturntablesChange} />
-            <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button>
-          </Fragment>}
-        <select
-          name="selectedProject"
-          onChange={this.handleSelectedProjectChange}
-          value={selectedProject}
-        >{Object.keys(demoProjects).map(projectName =>
-          <option key={projectName} value={projectName}>{projectName}</option>
-        )}
-        </select>
-        {project.turntables && <Rack
-          title={project.name}
-          turntables={project.turntables}
-          addDisk={this.addDisk}
-          removeDisk={this.removeDisk}
-          addTurntable={this.addTurntable}
-          removeTurntable={this.removeTurntable}
-        />}
+        <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+          <GlobalStyles />
+
+          <button onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</button>
+          {isJsonEditShown &&
+            <Fragment>
+              <textarea
+                style={{ width: "800px", height: "400px" }}
+                value={projectStr}
+                onChange={this.handleturntablesChange} />
+              <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button>
+            </Fragment>}
+          <select
+            name="selectedProject"
+            onChange={this.handleSelectedProjectChange}
+            value={selectedProject}
+          >{Object.keys(demoProjects).map(projectName =>
+            <option key={projectName} value={projectName}>{projectName}</option>
+          )}
+          </select>
+          <TypicalButton onClick={this.toggleTheme} style={{ float: "right" }}>{theme === "dark" ? "🌞" : "🌙"}</TypicalButton>
+          {project.turntables && <Rack
+            title={project.name}
+            turntables={project.turntables}
+            addDisk={this.addDisk}
+            removeDisk={this.removeDisk}
+            addTurntable={this.addTurntable}
+            removeTurntable={this.removeTurntable}
+          />}
+        </ThemeProvider>
       </Fragment>
     )
   }

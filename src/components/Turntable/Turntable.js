@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYPRESS, KEYDOWN } from 'react-key-handler'
 import Disk from './Disk/Disk'
+import TypicalButton from '../../components/TypicalButton'
 
 
 class Turntable extends Component {
@@ -75,10 +76,10 @@ class Turntable extends Component {
         return (
             <Wrapper>
                 <span><h3>{name}</h3></span>
-                <button onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }}>X</button>
-                <Button onClick={this.togglePaused} isActive={isPaused}>P</Button>
-                <Button onClick={this.toggleMuted} isActive={isMuted}>M</Button>
-                <Button onClick={this.restart}>R</Button>
+                <TypicalButton onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }}>X</TypicalButton>
+                <TypicalButton onClick={this.togglePaused} isActive={isPaused}>P</TypicalButton>
+                <TypicalButton onClick={this.toggleMuted} isActive={isMuted}>M</TypicalButton>
+                <TypicalButton onClick={this.restart}>R</TypicalButton>
                 {isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -123,7 +124,7 @@ class Turntable extends Component {
                 <div>
                     <input name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
                     <input name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
-                    <button disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</button>
+                    <TypicalButton disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</TypicalButton>
                 </div>
             </Wrapper>
         )
@@ -149,13 +150,8 @@ class Turntable extends Component {
 const Wrapper = styled.div`
     position: relative;
     border: 2px solid black;
-    width: 100%;
+    width: max-content;
 `
 
-export const Button = styled.button`
-    ${(props) => (props.isActive && `
-        background-color: blue;  `
-    )};
-`
 
 export default Turntable;

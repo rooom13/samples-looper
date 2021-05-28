@@ -234,6 +234,7 @@ class Disk extends Component {
 
 const Wrapper = styled.div`
     position: relative;
+    width: max-content;
 `
 
 export default Disk
