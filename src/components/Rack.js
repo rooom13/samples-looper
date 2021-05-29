@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
-import { TypicalButton } from '../components/Buttons'
+import { MuteButton, RestartButton, PauseButton, TypicalButton } from '../components/Buttons'
 import { VolumeRange } from '../components/VolumeRange'
 
 class Rack extends Component {
@@ -125,9 +125,9 @@ class Rack extends Component {
         return (
             <Wrapper>
                 <h1>{title}</h1>
-                <TypicalButton onClick={this.toggleMasterPaused} isActive={isMasterPaused} children={'P'} />
-                <TypicalButton onClick={this.toggleMasterMuted} isActive={isMasterMuted} children={'M'} />
-                <TypicalButton onClick={this.toggleMasterRestart} children={'R'} />
+                <PauseButton onClick={this.toggleMasterPaused} isActive={isMasterPaused} />
+                <MuteButton onClick={this.toggleMasterMuted} isActive={isMasterMuted} />
+                <RestartButton onClick={this.toggleMasterRestart} />
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}

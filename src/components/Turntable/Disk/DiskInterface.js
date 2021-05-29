@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import Animation from './Animation'
 import { scale } from '../../../utils/functions';
-import { TypicalButton } from '../../../components/Buttons'
+import { TypicalButton, PauseButton, MuteButton, RestartButton, LoopButton } from '../../../components/Buttons'
 import { VolumeRange } from '../../../components/VolumeRange'
 
 
@@ -45,8 +45,8 @@ class DiskInterface extends Component {
                 <Row>
                     <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
                     <Column>
-                        <TypicalButton onClick={togglePaused} isActive={isPaused} children={'P'} />
-                        <TypicalButton onClick={this.props.restart} isActive={isRestarting} children={'R'} />
+                        <PauseButton onClick={togglePaused} isActive={isPaused} />
+                        <RestartButton onClick={this.props.restart} isActive={isRestarting} />
                     </Column>
                     <Column>
                         {isAudioLoaded && isAnimation ?
@@ -55,8 +55,8 @@ class DiskInterface extends Component {
                             <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
                     </Column>
                     <Column>
-                        <TypicalButton onClick={toggleMuted} isActive={isMuted} children={'M'} />
-                        <TypicalButton onClick={toggleLoop} isActive={isLoop} children={'L'} />
+                        <MuteButton onClick={toggleMuted} isActive={isMuted} />
+                        <LoopButton onClick={toggleLoop} isActive={isLoop} />
                     </Column>
                     <Column>
                         <TypicalButton onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />

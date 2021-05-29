@@ -139,7 +139,7 @@ class App extends Component {
             <option key={projectName} value={projectName}>{projectName}</option>
           )}
           </select>
-          <LightsButton onClick={this.toggleTheme} style={{ float: "right" }} isDark={isDarkTheme} />
+          <LightsButton onClick={this.toggleTheme} style={{ float: "right" }} isActive={isDarkTheme} />
           {project.turntables && <Rack
             title={project.name}
             turntables={project.turntables}
