@@ -125,9 +125,9 @@ class Rack extends Component {
         return (
             <Wrapper>
                 <h1>{title}</h1>
-                <PauseButton onClick={this.toggleMasterPaused} isActive={isMasterPaused} />
-                <MuteButton onClick={this.toggleMasterMuted} isActive={isMasterMuted} />
-                <RestartButton onClick={this.toggleMasterRestart} />
+                <PauseButton title="pause master" onClick={this.toggleMasterPaused} isActive={isMasterPaused} />
+                <MuteButton title="mute master" onClick={this.toggleMasterMuted} isActive={isMasterMuted} />
+                <RestartButton title="restart master" onClick={this.toggleMasterRestart} />
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}

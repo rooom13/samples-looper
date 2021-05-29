@@ -75,10 +75,10 @@ class Turntable extends Component {
         return (
             <Wrapper>
                 <span><h3>{name}</h3></span>
-                <DeleteButton onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }} />
-                <PauseButton onClick={this.togglePaused} isActive={isPaused} />
-                <MuteButton onClick={this.toggleMuted} isActive={isMuted} />
-                <RestartButton onClick={this.restart} /*isActive={isRestarting}*/ />
+                <DeleteButton title="delete turntable" onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }} />
+                <PauseButton title="pause turntable" onClick={this.togglePaused} isActive={isPaused} />
+                <MuteButton title="mute turntable" onClick={this.toggleMuted} isActive={isMuted} />
+                <RestartButton title="restart turntable" onClick={this.restart} /*isActive={isRestarting}*/ />
                 {isSelected &&
                     <Fragment>
                         <KeyHandler

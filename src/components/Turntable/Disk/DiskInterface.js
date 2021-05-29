@@ -45,8 +45,8 @@ class DiskInterface extends Component {
                 <Row>
                     <Num onClick={(ev) => selectDisk(ev, index - 1)}> {index}</Num >
                     <Column>
-                        <PauseButton onClick={togglePaused} isActive={isPaused} />
-                        <RestartButton onClick={this.props.restart} isActive={isRestarting} />
+                        <PauseButton title="pause" onClick={togglePaused} isActive={isPaused} />
+                        <RestartButton title="restart" onClick={this.props.restart} isActive={isRestarting} />
                     </Column>
                     <Column>
                         {isAudioLoaded && isAnimation ?
@@ -55,12 +55,12 @@ class DiskInterface extends Component {
                             <Vinyl src={isAudioLoaded && "./sprites/disk.png"} style={{ transform: `rotate(${rotation}deg)` }} />}
                     </Column>
                     <Column>
-                        <MuteButton onClick={toggleMuted} isActive={isMuted} />
-                        <LoopButton onClick={toggleLoop} isActive={isLoop} />
+                        <MuteButton title="mute" onClick={toggleMuted} isActive={isMuted} />
+                        <LoopButton title="toggle loop" onClick={toggleLoop} isActive={isLoop} />
                     </Column>
                     <Column>
-                        <TypicalButton onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
-                        <TypicalButton onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
+                        <TypicalButton title="send to Switch L" onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
+                        <TypicalButton title="send to Switch R" onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
                     </Column>
                     <Column>
                         <Duration onChange={this.props.handleDuration} type={"number"} value={duration} />
