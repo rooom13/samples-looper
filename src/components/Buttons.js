@@ -22,3 +22,17 @@ export const DeleteButton = styled(BaseButton)`
         font-style: italic;
     }
 `
+
+export const LightsButton = styled(BaseButton)`
+    color: ${({ theme }) => theme.buttonText};
+    border: none;
+    background: none;
+    ::before {
+        content: "${(props) => props.isDark ? '🌞' : '🌙'}";
+    }
+    font-size: 1.5rem;
+
+    &:hover {
+        font-style: italic;
+    }
+`

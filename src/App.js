@@ -6,10 +6,9 @@ import { GlobalStyles } from './components/globalStyles';
 
 import demoProjects from './demoProjects.json'
 import Rack from './components/Rack'
-import { TypicalButton } from './components/Buttons'
+import { TypicalButton, LightsButton } from './components/Buttons'
 
 
-const DEFAULT_THEME = "dark"
 const DEFAULT_PROJECT = "175"
 
 class App extends Component {
@@ -19,7 +18,7 @@ class App extends Component {
     projectStr: "",
     isJsonEditShown: false,
     selectedProject: DEFAULT_PROJECT,
-    theme: DEFAULT_THEME
+    isDarkTheme: true
   }
 
   getSavedMusic = () => {
@@ -33,12 +32,12 @@ class App extends Component {
   componentDidMount() {
     const turntablesLocalStorage = null // this.getSavedMusic()
 
-    const theme = window.localStorage["theme"] || DEFAULT_THEME
+    const isDarkTheme = window.localStorage["isDarkTheme"]
     const project = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : demoProjects[this.state.selectedProject]
 
     // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
     this.setProject(project)
-    this.setState({ theme })
+    this.setState({ isDarkTheme })
   }
 
   setTurntables = (turntables) => {
@@ -94,7 +93,7 @@ class App extends Component {
   }
 
   toggleTheme = () => {
-    this.setState({ theme: this.state.theme === "dark" ? "light" : "dark" })
+    this.setState({ isDarkTheme: !this.state.isDarkTheme })
   }
 
   handleSelectedProjectChange = (e) => {
@@ -105,7 +104,7 @@ class App extends Component {
 
   render() {
     const { project, projectStr,
-      isJsonEditShown, selectedProject, theme
+      isJsonEditShown, selectedProject, isDarkTheme
     } = this.state
     let isInputValid = true
     try {
@@ -118,18 +117,20 @@ class App extends Component {
 
     return (
       <Fragment>
-        <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+        <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
           <GlobalStyles />
 
           <TypicalButton onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
           {isJsonEditShown &&
-            <Fragment>
-              <textarea
-                style={{ width: "800px", height: "400px" }}
-                value={projectStr}
-                onChange={this.handleturntablesChange} />
-              <TypicalButton disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
-            </Fragment>}
+            <div style={{ position: "absolute", zIndex: 1 }}>
+              <div>
+                <textarea
+                  style={{ width: "800px", height: "400px", backgroundColor: "black", color: "white" }}
+                  value={projectStr}
+                  onChange={this.handleturntablesChange} />
+                <TypicalButton style={{ bototm: 0 }} disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
+              </div>
+            </div>}
           <select
             name="selectedProject"
             onChange={this.handleSelectedProjectChange}
@@ -138,7 +139,7 @@ class App extends Component {
             <option key={projectName} value={projectName}>{projectName}</option>
           )}
           </select>
-          <TypicalButton onClick={this.toggleTheme} style={{ float: "right" }}>{theme === "dark" ? "🌞" : "🌙"}</TypicalButton>
+          <LightsButton onClick={this.toggleTheme} style={{ float: "right" }} isDark={isDarkTheme} />
           {project.turntables && <Rack
             title={project.name}
             turntables={project.turntables}
