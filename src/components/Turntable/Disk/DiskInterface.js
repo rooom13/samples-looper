@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 import Animation from './Animation'
 import { scale } from '../../../utils/functions';
-import TypicalButton from '../../../components/TypicalButton'
+import { TypicalButton } from '../../../components/Buttons'
+import { VolumeRange } from '../../../components/VolumeRange'
 
 
 class DiskInterface extends Component {
@@ -71,7 +72,7 @@ class DiskInterface extends Component {
                     </Column>
                 </Row>
                 <Row>
-                    <input type="range" min="0" max="2" step="0.01" value={volume} onChange={this.props.handleVolumeChange} />{(this.props.volume * 100).toFixed()} %
+                    <VolumeRange volume={volume} onChange={this.props.handleVolumeChange} value={volume} /> <span style={{ width: "3rem", textAlign: "right" }}>{(volume * 100).toFixed()} %</span>
                 </Row>
             </Wrapper>
         )

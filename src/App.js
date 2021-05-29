@@ -6,7 +6,7 @@ import { GlobalStyles } from './components/globalStyles';
 
 import demoProjects from './demoProjects.json'
 import Rack from './components/Rack'
-import TypicalButton from './components/TypicalButton'
+import { TypicalButton } from './components/Buttons'
 
 
 const DEFAULT_THEME = "dark"
@@ -121,14 +121,14 @@ class App extends Component {
         <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
           <GlobalStyles />
 
-          <button onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</button>
+          <TypicalButton onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
           {isJsonEditShown &&
             <Fragment>
               <textarea
                 style={{ width: "800px", height: "400px" }}
                 value={projectStr}
                 onChange={this.handleturntablesChange} />
-              <button disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</button>
+              <TypicalButton disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
             </Fragment>}
           <select
             name="selectedProject"

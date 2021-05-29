@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import styled from 'styled-components';
 import KeyHandler, { KEYPRESS } from 'react-key-handler'
 import DiskInterface from './DiskInterface'
+import { DeleteButton } from '../../Buttons'
 import { scale } from '../../../utils/functions'
-import styled from 'styled-components';
 // import { analyze } from 'web-audio-beat-detector';
 
 class Disk extends Component {
@@ -177,7 +178,7 @@ class Disk extends Component {
         return (
             <Wrapper>
                 <div>{name}</div>{this.state.tempo}
-                <button onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }}>X</button>
+                <DeleteButton onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }} />
                 {isTurntableSelected && isSelected &&
                     <Fragment>
                         <KeyHandler

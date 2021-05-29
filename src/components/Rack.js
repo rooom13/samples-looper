@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
-import TypicalButton from '../components/TypicalButton'
+import { TypicalButton } from '../components/Buttons'
+import { VolumeRange } from '../components/VolumeRange'
 
 class Rack extends Component {
 
@@ -172,13 +173,13 @@ class Rack extends Component {
                                 </ul>
                             </Column>
                             <Column>
-                                {(this.state.leftSwitchDisk.volume * 100).toFixed()} %
+                                <span style={{ width: "3rem", textAlign: "right" }}>{(leftSwitchDisk.volume * 100).toFixed()} %</span>
                             </Column>
                             <Column>
-                                <input type="range" min="0" max="1" step="0.01" value={rightSwitchDisk.volume} onChange={this.handleSwitchVolumeChange} />
+                                <VolumeRange value={rightSwitchDisk.volume} onChange={this.handleSwitchVolumeChange} />
                             </Column>
                             <Column>
-                                {(rightSwitchDisk.volume * 100).toFixed()} %
+                                <span style={{ width: "3rem", textAlign: "right" }}>{(rightSwitchDisk.volume * 100).toFixed()} %</span>
                             </Column>
                             <Column>
                                 <ul>
@@ -228,6 +229,6 @@ const TurntablesWrapper = styled.div`
     flex-direction: row;
     overflow: scroll;
     height: 60vh;
-`   
+`
 
 export default Rack;

@@ -2,8 +2,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYPRESS, KEYDOWN } from 'react-key-handler'
 import Disk from './Disk/Disk'
-import TypicalButton from '../../components/TypicalButton'
-
+import { DeleteButton, TypicalButton } from '../../components/Buttons'
 
 class Turntable extends Component {
 
@@ -76,7 +75,7 @@ class Turntable extends Component {
         return (
             <Wrapper>
                 <span><h3>{name}</h3></span>
-                <TypicalButton onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }}>X</TypicalButton>
+                <DeleteButton onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }}/>
                 <TypicalButton onClick={this.togglePaused} isActive={isPaused}>P</TypicalButton>
                 <TypicalButton onClick={this.toggleMuted} isActive={isMuted}>M</TypicalButton>
                 <TypicalButton onClick={this.restart}>R</TypicalButton>
