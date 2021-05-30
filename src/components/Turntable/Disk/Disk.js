@@ -177,7 +177,7 @@ class Disk extends Component {
         const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
         return (
             <Wrapper>
-                <div>{name}</div>{this.state.tempo}
+                <div style={{ margin: "0.5rem 0" }}>{name}</div>{this.state.tempo}
                 <DeleteButton onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }} />
                 {isTurntableSelected && isSelected &&
                     <Fragment>

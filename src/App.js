@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { ThemeProvider } from 'styled-components';
 import { lightTheme, darkTheme } from './components/Themes';
@@ -32,7 +32,8 @@ class App extends Component {
   componentDidMount() {
     const turntablesLocalStorage = null // this.getSavedMusic()
 
-    const isDarkTheme = window.localStorage["isDarkTheme"]
+    const isDarkTheme = window.localStorage["isDarkTheme"] === "true"
+
     const project = turntablesLocalStorage ? { turntables: turntablesLocalStorage } : demoProjects[this.state.selectedProject]
 
     // const originSrc = "https://www.dropbox.com/s/0zh9980kcvu0kva/Mi%20gran%20noche%20%28NUEVOEXITO.ORG%29.mp3?dl=0"
@@ -93,7 +94,9 @@ class App extends Component {
   }
 
   toggleTheme = () => {
-    this.setState({ isDarkTheme: !this.state.isDarkTheme })
+    const isDarkTheme = !this.state.isDarkTheme
+    this.setState({ isDarkTheme })
+    window.localStorage["isDarkTheme"] = isDarkTheme
   }
 
   handleSelectedProjectChange = (e) => {
@@ -116,30 +119,31 @@ class App extends Component {
     if (!project) return <div>Loading</div>
 
     return (
-      <Fragment>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
         <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
           <GlobalStyles />
-
-          <TypicalButton onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
-          {isJsonEditShown &&
-            <div style={{ position: "absolute", zIndex: 1 }}>
-              <div>
-                <textarea
-                  style={{ width: "800px", height: "400px", backgroundColor: "black", color: "white" }}
-                  value={projectStr}
-                  onChange={this.handleturntablesChange} />
-                <TypicalButton style={{ bototm: 0 }} disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
-              </div>
-            </div>}
-          <select
-            name="selectedProject"
-            onChange={this.handleSelectedProjectChange}
-            value={selectedProject}
-          >{Object.keys(demoProjects).map(projectName =>
-            <option key={projectName} value={projectName}>{projectName}</option>
-          )}
-          </select>
-          <LightsButton onClick={this.toggleTheme} style={{ float: "right" }} isActive={isDarkTheme} />
+          <div>
+            <TypicalButton onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
+            {isJsonEditShown &&
+              <div style={{ position: "absolute", zIndex: 1 }}>
+                <div>
+                  <textarea
+                    style={{ width: "800px", height: "400px", backgroundColor: "black", color: "white" }}
+                    value={projectStr}
+                    onChange={this.handleturntablesChange} />
+                  <TypicalButton style={{ bototm: 0 }} disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
+                </div>
+              </div>}
+            <select
+              name="selectedProject"
+              onChange={this.handleSelectedProjectChange}
+              value={selectedProject}
+            >{Object.keys(demoProjects).map(projectName =>
+              <option key={projectName} value={projectName}>{projectName}</option>
+            )}
+            </select>
+            <LightsButton title="toggle dark theme" onClick={this.toggleTheme} style={{ float: "right" }} isActive={isDarkTheme} />
+          </div>
           {project.turntables && <Rack
             title={project.name}
             turntables={project.turntables}
@@ -147,9 +151,10 @@ class App extends Component {
             removeDisk={this.removeDisk}
             addTurntable={this.addTurntable}
             removeTurntable={this.removeTurntable}
-          />}
+          />
+          }
         </ThemeProvider>
-      </Fragment>
+      </div>
     )
   }
 }

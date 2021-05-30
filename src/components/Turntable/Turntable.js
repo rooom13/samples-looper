@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYPRESS, KEYDOWN } from 'react-key-handler'
 import Disk from './Disk/Disk'
-import { DeleteButton, PauseButton, MuteButton, RestartButton, TypicalButton } from '../../components/Buttons'
+import { DeleteButton, PauseButton, MuteButton, RestartButton, AddButton } from '../../components/Buttons'
 
 class Turntable extends Component {
 
@@ -74,11 +74,12 @@ class Turntable extends Component {
 
         return (
             <Wrapper>
-                <span><h3>{name}</h3></span>
-                <DeleteButton title="delete turntable" onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }} />
-                <PauseButton title="pause turntable" onClick={this.togglePaused} isActive={isPaused} />
-                <MuteButton title="mute turntable" onClick={this.toggleMuted} isActive={isMuted} />
-                <RestartButton title="restart turntable" onClick={this.restart} /*isActive={isRestarting}*/ />
+                <Title>{name} {" "}
+                    <DeleteButton title="delete turntable" onClick={this.props.removeTurntable} style={{ top: "0", right: "0", position: "absolute" }} />
+                    <PauseButton title="pause turntable" onClick={this.togglePaused} isActive={isPaused} />
+                    <MuteButton title="mute turntable" onClick={this.toggleMuted} isActive={isMuted} />
+                    <RestartButton title="restart turntable" onClick={this.restart} /*isActive={isRestarting}*/ />
+                </Title>
                 {isSelected &&
                     <Fragment>
                         <KeyHandler
@@ -120,11 +121,12 @@ class Turntable extends Component {
                         />
                     </Fragment>)
                 })}
-                <div>
-                    <input name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
-                    <input name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
-                    <TypicalButton disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked}>+</TypicalButton>
+                <div style={{ display: "flex" }}>
+                    <StyledInput name="newDiskName" placeholder="new disk name" value={newDiskName} onChange={this.handleFormChange} />
+                    <StyledInput name="newDiskSrc" placeholder="new disk src" value={newDiskSrc} onChange={this.handleFormChange} />
+                    <AddButton title="add disk" disabled={!(newDiskName && newDiskSrc)} onClick={this.onNewDiskClicked} />
                 </div>
+                <div style={{ height: "13rem" }} />
             </Wrapper>
         )
     }
@@ -146,11 +148,35 @@ class Turntable extends Component {
     }
 }
 
-const Wrapper = styled.div`
-    position: relative;
-    border: 2px solid black;
-    width: max-content;
+const StyledInput = styled.input`
+    color: ${({ theme }) => theme.text};
+    background: none;
+    border: none;
+    font-size: 1rem;
+    width: 100%;
+    
+    ::placeholder {
+        font-style: italic;
+        color: grey;
+        text-decoration: underline;
+    }
 `
 
+const Title = styled.div`
+    margin: 0.75rem 0;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    font-variant: small-caps;
+`
+
+const Wrapper = styled.div`
+    position: relative;
+    width: max-content;
+    margin: 0.25rem;
+
+    ::after {
+        height: 10rem;
+    }
+`
 
 export default Turntable;

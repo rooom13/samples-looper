@@ -59,8 +59,8 @@ class DiskInterface extends Component {
                         <LoopButton title="toggle loop" onClick={toggleLoop} isActive={isLoop} />
                     </Column>
                     <Column>
-                        <TypicalButton title="send to Switch L" onClick={this.props.setLeftDiskSwitch} children={'to Switch L'} />
-                        <TypicalButton title="send to Switch R" onClick={this.props.setRightDiskSwitch} children={'to Switch R'} />
+                        <TypicalButton title="send to Switch L" onClick={this.props.setLeftDiskSwitch} children={'🢂 L'} />
+                        <TypicalButton title="send to Switch R" onClick={this.props.setRightDiskSwitch} children={'🢂 R'} />
                     </Column>
                     <Column>
                         <Duration onChange={this.props.handleDuration} type={"number"} value={duration} />
@@ -72,7 +72,8 @@ class DiskInterface extends Component {
                     </Column>
                 </Row>
                 <Row>
-                    <VolumeRange volume={volume} onChange={this.props.handleVolumeChange} value={volume} /> <span style={{ width: "3rem", textAlign: "right" }}>{(volume * 100).toFixed()} %</span>
+                    <VolumeRange volume={volume} onChange={this.props.handleVolumeChange} value={volume} />
+                    <span style={{ fontSize: "0.75rem", width: "3rem", textAlign: "right" }}>{(volume * 100).toFixed()} %</span>
                 </Row>
             </Wrapper>
         )
@@ -118,11 +119,12 @@ const Row = styled.div`
 `
 
 const Wrapper = styled.div`
+    border-radius: 5px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: ${props => props.isSelected ? props.isTurntableSelected ? 'brown' : 'lightgrey' : 'grey'};
+    background-color: ${props => props.isSelected ? props.isTurntableSelected ? 'brown' : 'grey' : 'dimgrey'};
 `
 
 

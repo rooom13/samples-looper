@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components'
 import KeyHandler, { KEYDOWN } from 'react-key-handler'
 import Turntable from './Turntable/Turntable'
-import { MuteButton, RestartButton, PauseButton, TypicalButton } from '../components/Buttons'
-import { VolumeRange } from '../components/VolumeRange'
+import { MuteButton, RestartButton, PauseButton, AddButton } from '../components/Buttons'
+import { Switch } from './Switch';
 
 class Rack extends Component {
 
@@ -73,6 +73,7 @@ class Rack extends Component {
         this.setState({
             [whichDisk + "SwitchDisk"]: {
                 turntable: turntable,
+                turntableName: turntables[turntable].name,
                 disk: disk,
                 volume: 1,
                 name: turntables[turntable].disks[disk].name
@@ -125,9 +126,11 @@ class Rack extends Component {
         return (
             <Wrapper>
                 <h1>{title}</h1>
-                <PauseButton title="pause master" onClick={this.toggleMasterPaused} isActive={isMasterPaused} />
-                <MuteButton title="mute master" onClick={this.toggleMasterMuted} isActive={isMasterMuted} />
-                <RestartButton title="restart master" onClick={this.toggleMasterRestart} />
+                <div style={{ marginBottom: "0.5rem" }}>
+                    <PauseButton title="pause master" onClick={this.toggleMasterPaused} isActive={isMasterPaused} />
+                    <MuteButton title="mute master" onClick={this.toggleMasterMuted} isActive={isMasterMuted} />
+                    <RestartButton title="restart master" onClick={this.toggleMasterRestart} />
+                </div>
                 <TurntablesWrapper>
                     <KeyHandler
                         keyEventName={KEYDOWN}
@@ -156,79 +159,59 @@ class Rack extends Component {
                             removeTurntable={() => this.removeTurntable(i)}
                             removeDisk={(diskIndex) => this.props.removeDisk(i, diskIndex)}
                         />)}
-                    <div>
-                        <input placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />
-                        <TypicalButton disabled={!newTurntableName} onClick={this.onAddTurntableClicked}>+</TypicalButton>
+                    <div style={{ display: "flex" }}>
+                        <StyledInput placeholder="new turntable name" value={newTurntableName} onChange={this.handleNewTurnTableNameChange} />
+                        <AddButton title="add turntable" disabled={!newTurntableName} onClick={this.onAddTurntableClicked} />
                     </div>
                 </TurntablesWrapper>
                 <SwitchWrapper>
-                    <SwithBox>
-                        <h3>Switch</h3>
-                        <Row>
-                            <Column>
-                                <ul>
-                                    <li>Disk name: {leftSwitchDisk.name}</li>
-                                    <li>turntable: {rightSwitchDisk.turntable}</li>
-                                    <li>disk: {leftSwitchDisk.disk}</li>
-                                </ul>
-                            </Column>
-                            <Column>
-                                <span style={{ width: "3rem", textAlign: "right" }}>{(leftSwitchDisk.volume * 100).toFixed()} %</span>
-                            </Column>
-                            <Column>
-                                <VolumeRange value={rightSwitchDisk.volume} onChange={this.handleSwitchVolumeChange} />
-                            </Column>
-                            <Column>
-                                <span style={{ width: "3rem", textAlign: "right" }}>{(rightSwitchDisk.volume * 100).toFixed()} %</span>
-                            </Column>
-                            <Column>
-                                <ul>
-                                    <li>Disk name: {rightSwitchDisk.name}</li>
-                                    <li>turntable: {rightSwitchDisk.turntable}</li>
-                                    <li>disk: {rightSwitchDisk.disk}</li>
-                                </ul>
-                            </Column>
-                        </Row>
-                    </SwithBox>
+                    <Switch
+                        leftDisk={leftSwitchDisk}
+                        rightDisk={rightSwitchDisk}
+                        handleSwitchVolumeChange={this.handleSwitchVolumeChange}
+                    />
                 </SwitchWrapper>
             </Wrapper>
         )
     }
 }
 
+const StyledInput = styled.input`
+    color: ${({ theme }) => theme.text};
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    
+    ::placeholder {
+        font-style: italic;
+        color: grey;
+        text-decoration: underline;
+    }
+`
+
 const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
     width: 100%;
+    height: 100%;
     overflow-y: hidden;
 `
 
-const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 0.5rem;
-`
-const Row = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-`
-
-const SwithBox = styled.div`
-    padding: 1rem;
-    background-color: #afafaf;
-    text-align: center;
-`
 const SwitchWrapper = styled.div`
-    background-color: grey;
     justify-content: center;
     display: flex;
-    padding: 1rem;
+    position: absolute;
+    bottom: 1.25rem;
 `
 
 const TurntablesWrapper = styled.div`
     display: flex;
     flex-direction: row;
     overflow: scroll;
-    height: 60vh;
+    width: 100%;
+    border-top: 1px solid grey;
 `
 
 export default Rack;

@@ -43,6 +43,10 @@ export const LoopButton = (props) => {
     return <EmojiButton {...props} emojiActive={'🔁'} isActive />
 }
 
+export const AddButton = (props) => {
+    return <EmojiButton {...props} emojiActive={'+'} isActive style={{ color: "lime", fontWeight: "bold", fontSize: "x-large" }} />
+}
+
 export const LightsButton = (props) => {
     return <EmojiButton {...props} emojiActive={'🌞'} emojiInactive={'🌙'} />
 }
