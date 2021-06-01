@@ -10,22 +10,35 @@ class Rack extends Component {
     constructor(props) {
         super(props)
 
+        const { turntables } = this.props
+
+        const DEFAULT_LEFTSWITCHDISK_TURNTABLE_INDEX = 0
+        const DEFAULT_RIGHTSWITCHDISK_TURNTABLE_INDEX = 1
+        const DEFAULT_SWITCHDISK_DISK_INDEX = 0
+
+        const DEFAULT_LEFTSWITCHDISK_TURNTABLE = turntables[DEFAULT_LEFTSWITCHDISK_TURNTABLE_INDEX]
+        const DEFAULT_RIGHTSWITCHDISK_TURNTABLE = turntables[DEFAULT_RIGHTSWITCHDISK_TURNTABLE_INDEX]
+        const DEFAULT_LEFTSWITCHDISK_DISK_NAME = DEFAULT_LEFTSWITCHDISK_TURNTABLE.disks[DEFAULT_SWITCHDISK_DISK_INDEX].name
+        const DEFAULT_RIGHTSWITCHDISK_DISK_NAME = DEFAULT_RIGHTSWITCHDISK_TURNTABLE.disks[DEFAULT_SWITCHDISK_DISK_INDEX].name
+
         this.state = {
             selectedTurntable: 0,
 
             isMasterPaused: true,
             isMasterMuted: false,
             leftSwitchDisk: {
-                turntable: 0,
-                disk: 0,
                 volume: 1,
-                name: this.props.turntables[0].disks[0].name
+                turntableIndex: DEFAULT_LEFTSWITCHDISK_TURNTABLE_INDEX,
+                diskIndex: DEFAULT_SWITCHDISK_DISK_INDEX,
+                diskName: DEFAULT_LEFTSWITCHDISK_DISK_NAME,
+                turntableName: DEFAULT_LEFTSWITCHDISK_TURNTABLE.name
             },
             rightSwitchDisk: {
-                turntable: 1,
-                disk: 0,
                 volume: 1,
-                name: this.props.turntables[1].disks[0].name
+                turntableIndex: DEFAULT_RIGHTSWITCHDISK_TURNTABLE_INDEX,
+                diskIndex: DEFAULT_SWITCHDISK_DISK_INDEX,
+                diskName: DEFAULT_RIGHTSWITCHDISK_DISK_NAME,
+                turntableName: DEFAULT_RIGHTSWITCHDISK_TURNTABLE.name
             },
             newTurntableName: ""
         }
@@ -67,16 +80,18 @@ class Rack extends Component {
     /**
      * @param {str: [left | right]} whichDisk 
      */
-    setDiskSwitch = (whichDisk, turntable, disk) => {
+    setDiskSwitch = (whichDisk, turntableIndex, diskIndex) => {
         const { turntables } = this.props
 
+
+        const turntable = turntables[turntableIndex]
         this.setState({
             [whichDisk + "SwitchDisk"]: {
-                turntable: turntable,
-                turntableName: turntables[turntable].name,
-                disk: disk,
+                turntableIndex,
+                diskIndex,
+                turntableName: turntable.name,
+                diskName: turntable.disks[diskIndex].name,
                 volume: 1,
-                name: turntables[turntable].disks[disk].name
             }
         })
     }

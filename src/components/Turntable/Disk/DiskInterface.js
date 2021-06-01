@@ -125,6 +125,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     background-color: ${props => props.isSelected ? props.isTurntableSelected ? 'brown' : 'grey' : 'dimgrey'};
+    box-shadow: 0px 0px 6px 1px ${({ theme }) => theme.shadow};
 `
 
 
