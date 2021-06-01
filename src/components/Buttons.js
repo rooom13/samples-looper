@@ -8,6 +8,7 @@ const BaseButton = styled.button`
 export const TypicalButton = styled(BaseButton)`
     color: ${({ theme }) => theme.buttonText};
     background-color: ${({ isActive, theme }) => isActive ? theme.buttonActive : theme.button};
+    border-radius: 5px;
 `
 
 const EmojiButton = styled(BaseButton)`
@@ -49,5 +50,9 @@ export const AddButton = (props) => {
 
 export const LightsButton = (props) => {
     return <EmojiButton {...props} emojiActive={'🌞'} emojiInactive={'🌙'} />
+}
+
+export const SaveButton = (props) => {
+    return <EmojiButton {...props} emojiActive={'💾'} isActive />
 }
 

@@ -6,6 +6,7 @@ import { GlobalStyles } from './components/globalStyles';
 
 import demoProjects from './demoProjects.json'
 import Rack from './components/Rack'
+import ProjectJSONEdit from './components/ProjectJSONEdit'
 import { TypicalButton, LightsButton } from './components/Buttons'
 
 
@@ -16,7 +17,7 @@ class App extends Component {
   state = {
     project: {},
     projectStr: "",
-    isJsonEditShown: false,
+    isProjectJSONEditShown: false,
     selectedProject: DEFAULT_PROJECT,
     isDarkTheme: true
   }
@@ -89,8 +90,8 @@ class App extends Component {
     this.setTurntables(turntables)
   }
 
-  toggleJsonEdit = () => {
-    this.setState({ isJsonEditShown: !this.state.isJsonEditShown })
+  toggleProjectJSONEdit = () => {
+    this.setState({ isProjectJSONEditShown: !this.state.isProjectJSONEditShown })
   }
 
   toggleTheme = () => {
@@ -107,7 +108,7 @@ class App extends Component {
 
   render() {
     const { project, projectStr,
-      isJsonEditShown, selectedProject, isDarkTheme
+      isProjectJSONEditShown, selectedProject, isDarkTheme
     } = this.state
     let isInputValid = true
     try {
@@ -123,17 +124,14 @@ class App extends Component {
         <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
           <GlobalStyles />
           <div>
-            <TypicalButton onClick={this.toggleJsonEdit} style={{ fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
-            {isJsonEditShown &&
-              <div style={{ position: "absolute", zIndex: 1 }}>
-                <div>
-                  <textarea
-                    style={{ width: "800px", height: "400px", backgroundColor: "black", color: "white" }}
-                    value={projectStr}
-                    onChange={this.handleturntablesChange} />
-                  <TypicalButton style={{ bototm: 0 }} disabled={!isInputValid} onClick={this.onApplyClicked}>Apply</TypicalButton>
-                </div>
-              </div>}
+            <TypicalButton onClick={this.toggleProjectJSONEdit} style={{ padding: "0.25rem", fontFamily: "monospace", fontWeight: "bolder" }}>{"</>"}</TypicalButton>
+            {isProjectJSONEditShown &&
+              <ProjectJSONEdit
+                handleProjectChange={this.handleturntablesChange}
+                isInputValid={isInputValid}
+                projectStr={projectStr}
+                onApplyClicked={this.onApplyClicked}
+              />}
             <select
               name="selectedProject"
               onChange={this.handleSelectedProjectChange}
@@ -158,5 +156,6 @@ class App extends Component {
     )
   }
 }
+
 
 export default App;
