@@ -105,8 +105,8 @@ class Rack extends Component {
         const leftSwitchDiskVolume = 1 - volume
         const rightSwitchDiskVolume = volume
 
-        this.turntables[leftSwitchDisk.turntable].disks[leftSwitchDisk.disk].handleVolumeChange({ target: { value: leftSwitchDiskVolume } })
-        this.turntables[rightSwitchDisk.turntable].disks[rightSwitchDisk.disk].handleVolumeChange(e)
+        this.turntables[leftSwitchDisk.turntableIndex].disks[leftSwitchDisk.diskIndex].handleVolumeChange({ target: { value: leftSwitchDiskVolume } })
+        this.turntables[rightSwitchDisk.turntableIndex].disks[rightSwitchDisk.diskIndex].handleVolumeChange(e)
 
         this.setState({
             leftSwitchDisk: { ...leftSwitchDisk, volume: leftSwitchDiskVolume },
