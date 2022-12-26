@@ -2,6 +2,7 @@
   "name": "samples-looper",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://rooom13.github.io/samples-looper",
   "dependencies": {
     "list-react-files": "^0.2.0",
     "react": "^17.0.2",
@@ -15,7 +16,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
+    "clean": "node node_modules/gh-pages/bin/gh-pages-clean.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -25,5 +29,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  }
 }
