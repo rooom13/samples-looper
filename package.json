@@ -2,13 +2,13 @@
   "name": "samples-looper",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rooom13.github.io/samples-looper",
+  "homepage": "https://rooom13.github.io/",
   "dependencies": {
     "list-react-files": "^0.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-key-handler": "^1.2.0-beta.3",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "styled-components": "^5.2.3",
     "web-audio-beat-detector": "^8.1.7"
   },

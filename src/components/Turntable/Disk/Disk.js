@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
+import KeyHandler, { KEYPRESS } from 'react-key-handler';
 import styled from 'styled-components';
-import KeyHandler, { KEYPRESS } from 'react-key-handler'
-import DiskInterface from './DiskInterface'
-import { DeleteButton } from '../../Buttons'
-import { scale } from '../../../utils/functions'
-// import { analyze } from 'web-audio-beat-detector';
+import { analyze } from 'web-audio-beat-detector';
+import { scale } from '../../../utils/functions';
+import { DeleteButton } from '../../Buttons';
+import DiskInterface from './DiskInterface';
+
 
 class Disk extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Disk extends Component {
             originalDuration: 0,
             duration: 0,
             currentTime: 0,
-            tempo: null
+            originalTempo: null
         };
         this.startedAt = 0
         this.pausedAt = 0
@@ -43,10 +44,15 @@ class Disk extends Component {
                     originalDuration: buffer.duration,
                     duration: buffer.duration
                 })
-                // analyze(this.buffer)
-                //     .then((tempo) => {
-                //         this.setState({ tempo })
-                //     })
+
+                analyze(this.buffer)
+                    .then((originalTempo) => {
+                        this.setState({ originalTempo })
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        this.setState({ originalTempo: -1 })
+                    })
             }))
         requestAnimationFrame(this.tick.bind(this));
     }
@@ -174,10 +180,14 @@ class Disk extends Component {
 
     render() {
         const { isSelected, index, selectDisk, isTurntableSelected, src, name } = this.props
-        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate } = this.state
+        const { isPaused, isMuted, isLoop, progress, duration, isAudioLoaded, isRestarting, volume, playbackRate, originalTempo } = this.state
         return (
             <Wrapper>
-                <div style={{ margin: "0.5rem 0" }}>{name}</div>{this.state.tempo}
+                {originalTempo &&
+                    <Fragment>
+                        <div style={{ margin: "0.5rem 0" }}>{name}</div>
+                        <span>Original tempo: {(originalTempo.toFixed(2))} Adjusted Tempo {(originalTempo * playbackRate).toFixed(2)}</span> 
+              </Fragment>  }
                 <DeleteButton onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }} />
                 {isTurntableSelected && isSelected &&
                     <Fragment>
