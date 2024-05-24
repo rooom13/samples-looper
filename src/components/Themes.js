@@ -5,7 +5,8 @@ export const lightTheme = {
     buttonActive: '#bfbfbf',
     buttonText: 'black',
     backgroundSwitch: 'lightgray',
-    shadow: 'black'
+    shadow: 'black',
+    tempoText: "#666"
 }
 export const darkTheme = {
     body: 'black',
@@ -14,6 +15,7 @@ export const darkTheme = {
     buttonActive: '#e64040',
     buttonText: 'white',
     backgroundSwitch: '#383838',
-    shadow: 'white'
+    shadow: 'white',
+    tempoText: "#666"
 
 }

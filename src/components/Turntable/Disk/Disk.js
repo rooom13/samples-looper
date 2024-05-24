@@ -186,7 +186,7 @@ class Disk extends Component {
                 {originalTempo &&
                     <Fragment>
                         <div style={{ margin: "0.5rem 0" }}>{name}</div>
-                        <span>Original tempo: {(originalTempo.toFixed(2))} Adjusted Tempo {(originalTempo * playbackRate).toFixed(2)}</span> 
+                        <Tempo>Original tempo: {(originalTempo.toFixed(2))} Adjusted Tempo {(originalTempo * playbackRate).toFixed(2)}</Tempo> 
               </Fragment>  }
                 <DeleteButton onClick={this.props.removeDisk} style={{ top: "0", right: "0", position: "absolute" }} />
                 {isTurntableSelected && isSelected &&
@@ -242,6 +242,12 @@ class Disk extends Component {
         )
     }
 }
+
+const Tempo = styled.div`
+    font-family: monospace;
+    margin: 0.5rem 0;
+    color:  ${({ theme }) => theme.tempoText};
+`
 
 const Wrapper = styled.div`
     position: relative;

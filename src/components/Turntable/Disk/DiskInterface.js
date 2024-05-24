@@ -59,8 +59,8 @@ class DiskInterface extends Component {
                         <LoopButton title="toggle loop" onClick={toggleLoop} isActive={isLoop} />
                     </Column>
                     <Column>
-                        <TypicalButton title="send to Switch L" onClick={this.props.setLeftDiskSwitch} children={'🢂 L'} />
-                        <TypicalButton title="send to Switch R" onClick={this.props.setRightDiskSwitch} children={'🢂 R'} />
+                        <TypicalButton title="send to Switch L" onClick={this.props.setLeftDiskSwitch} children={'🇱 L'} />
+                        <TypicalButton title="send to Switch R" onClick={this.props.setRightDiskSwitch} children={'🇷 R'} />
                     </Column>
                     <Column>
                         <Duration onChange={this.props.handleDuration} type={"number"} value={duration} />
